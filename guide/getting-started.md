@@ -24,7 +24,7 @@ Add to your Claude Code MCP config. The file location depends on your setup:
       "args": ["obsidian-mcp-server"],
       "env": {
         "OBSIDIAN_API_KEY": "<paste your API key here>",
-        "OBSIDIAN_BASE_URL": "http://127.0.0.1:27123",
+        "OBSIDIAN_BASE_URL": "https://127.0.0.1:27124",
         "OBSIDIAN_VERIFY_SSL": "false",
         "OBSIDIAN_ENABLE_CACHE": "true"
       }
