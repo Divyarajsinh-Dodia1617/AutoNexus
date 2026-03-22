@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "autonexus",
-  "version": "0.2.0",
-  "description": "AutoNexus — autonomous goal-directed iteration engine with Obsidian as knowledge backbone. Full Agile sprint lifecycle with 28+ autonomous agent roles. Inspired by Karpathy's autoresearch.",
+  "version": "0.3.0",
+  "description": "AutoNexus — autonomous goal-directed iteration engine with Obsidian as knowledge backbone. Full Agile sprint lifecycle with 28+ autonomous agent roles. Workflow composition, event-driven hooks, and on-demand canvas visualization. Inspired by Karpathy's autoresearch.",
   "owner": {
     "name": "Divyarajsinh Dodia",
     "email": "divyarajsinh.dodia@outlook.com",
@@ -10,13 +10,13 @@
   },
   "metadata": {
     "description": "AutoNexus plugin marketplace — autonomous iteration with Obsidian knowledge backbone",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "autonexus",
-      "description": "Autonomous iteration engine with Obsidian MCP integration. 14 commands: /autonexus (core loop), /autonexus:plan (goal wizard), /autonexus:predict (multi-persona swarm), /autonexus:debug (bug hunter), /autonexus:fix (error crusher), /autonexus:security (STRIDE+OWASP audit), /autonexus:ship (universal shipping), /autonexus:scenario (edge case explorer), /autonexus:learn (documentation engine), /autonexus:setup (Obsidian MCP configurator), /autonexus:resume (session resume), /autonexus:status (project dashboard), /autonexus:review (session analysis), /autonexus:agile (full sprint lifecycle with 28+ agent roles), /autonexus:refine-backlog (interactive backlog grooming). Every iteration reads from and writes to Obsidian.",
-      "version": "0.2.0",
+      "description": "Autonomous iteration engine with Obsidian MCP integration. 18 commands: /autonexus (core loop), /autonexus:plan (goal wizard), /autonexus:predict (multi-persona swarm), /autonexus:debug (bug hunter), /autonexus:fix (error crusher), /autonexus:security (STRIDE+OWASP audit), /autonexus:ship (universal shipping), /autonexus:scenario (edge case explorer), /autonexus:learn (documentation engine), /autonexus:setup (Obsidian MCP configurator), /autonexus:resume (session resume), /autonexus:status (project dashboard), /autonexus:review (session analysis), /autonexus:agile (full sprint lifecycle with 28+ agent roles), /autonexus:refine-backlog (interactive backlog grooming), /autonexus:chain (workflow composition), /autonexus:canvas (on-demand visualization), /autonexus:hook (event-driven triggers). Every iteration reads from and writes to Obsidian.",
+      "version": "0.3.0",
       "author": {
         "name": "Divyarajsinh Dodia",
         "email": "divyarajsinh.dodia@outlook.com",
@@ -39,7 +39,10 @@
         "documentation",
         "agile",
         "sprint-management",
-        "agent-team"
+        "agent-team",
+        "workflow-composition",
+        "event-driven",
+        "canvas-visualization"
       ],
       "tags": [
         "autonomous-loop",
@@ -47,7 +50,10 @@
         "code-quality",
         "productivity",
         "agile-sprints",
-        "agent-roles"
+        "agent-roles",
+        "pipelines",
+        "hooks",
+        "canvas"
       ]
     }
   ]

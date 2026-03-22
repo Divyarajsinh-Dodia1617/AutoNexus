@@ -19,6 +19,9 @@ Comprehensive documentation for every AutoNexus command.
 | [/autonexus:resume](autonexus-resume.md) | Resume a previous session from Obsidian |
 | [/autonexus:status](autonexus-status.md) | Read-only project dashboard |
 | [/autonexus:review](autonexus-review.md) | Post-session analysis + lessons learned |
+| [/autonexus:chain](autonexus-chain.md) | Workflow composition — chain commands into pipelines |
+| [/autonexus:canvas](autonexus-canvas.md) | On-demand Obsidian Canvas generation |
+| [/autonexus:hook](autonexus-hook.md) | Event-driven triggers for automated reactions |
 
 ## Quick Decision Guide
 
@@ -36,6 +39,11 @@ Comprehensive documentation for every AutoNexus command.
 | Continue where I left off | `/autonexus:resume` |
 | Check project health at a glance | `/autonexus:status` |
 | Analyze what happened in a session | `/autonexus:review` |
+| Chain multiple commands | `/autonexus:chain predict → agile → ship` |
+| Use a pipeline template | `/autonexus:chain --template full-sprint` |
+| Visualize architecture | `/autonexus:canvas --type architecture` |
+| Auto-react to crashes | `/autonexus:hook --template auto-debug-on-crashes` |
+| Manage event triggers | `/autonexus:hook --list` |
 | Predict then debug | `/autonexus:predict --chain debug` |
 | Debug then auto-fix | `/autonexus:debug --fix` |
-| Full pipeline | `/autonexus:predict --chain scenario,debug,fix` then `/autonexus:ship` |
+| Full pipeline | `/autonexus:chain --template full-sprint` |

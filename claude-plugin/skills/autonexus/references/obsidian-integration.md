@@ -28,10 +28,24 @@ This file defines all Obsidian MCP interactions. Every AutoNexus command loads t
 │       │   │   └── {session-id}-summary.md   ← Session summary
 │       │   └── Archive/
 │       │       └── {YYYY-MM-DD}/             ← Auto-archived after 30 days
-│       └── Predictions/
-│           └── {YYYY-MM-DD}-{slug}/
-│               ├── persona-{name}.md         ← One note per persona
-│               └── debate.md                 ← Debate transcript + consensus
+│       ├── Predictions/
+│       │   └── {YYYY-MM-DD}-{slug}/
+│       │       ├── persona-{name}.md         ← One note per persona
+│       │       └── debate.md                 ← Debate transcript + consensus
+│       ├── Pipelines/
+│       │   ├── {name}.md                     ← Saved pipeline definitions
+│       │   └── runs/
+│       │       └── {run-id}.md               ← Pipeline run logs
+│       ├── Hooks/
+│       │   └── {name}.md                     ← Event-driven hook definitions
+│       └── Canvases/
+│           ├── architecture.canvas           ← Component relationship diagram
+│           ├── sprint-{N}-board.canvas       ← Sprint board kanban
+│           ├── dependencies.canvas           ← Import/dependency graph
+│           ├── timeline.canvas               ← Session history timeline
+│           ├── knowledge-map.canvas          ← All notes with connections
+│           ├── data-flow.canvas              ← Data flow diagram
+│           └── pipeline-{name}.canvas        ← Pipeline step visualization
 ├── Cross-Project/
 │   └── {slug}.md                             ← Patterns applicable across projects
 └── Daily Notes/                              ← Managed by Obsidian's daily note plugin
@@ -804,6 +818,129 @@ discovered: {YYYY-MM-DD}
 ```
 
 Write to: `Cross-Project/{slug}.md`
+
+---
+
+## Pipeline Notes
+
+### Pipeline Definition
+
+Stored at `Projects/{ProjectName}/Pipelines/{name}.md`:
+
+```markdown
+---
+tags: [autonexus/pipeline]
+name: {pipeline-name}
+created: {ISO timestamp}
+last_run: {ISO timestamp or null}
+run_count: {N}
+---
+
+# Pipeline: {Human-readable Name}
+
+## Description
+{What this pipeline does and when to use it}
+
+## Steps
+
+1. **{command}** — `{args}`
+   - Condition: {on-success|on-failure|always|if-metric-above:N}
+   - On failure: {skip|halt|retry:N}
+
+{Repeat for each step}
+
+## Variables
+- `$SCOPE` = "{value}"
+```
+
+### Pipeline Run Log
+
+Written after every pipeline execution at `Projects/{ProjectName}/Pipelines/runs/{run-id}.md`:
+
+```markdown
+---
+tags: [autonexus/pipeline-run, autonexus/{project}]
+pipeline: {name or "inline"}
+run_id: {run-id}
+started: {ISO timestamp}
+completed: {ISO timestamp}
+status: {completed|halted|failed}
+steps_total: {N}
+steps_completed: {N}
+---
+
+# Pipeline Run: {name}
+
+## Steps
+
+### Step {N}: /autonexus:{command}
+- **Status:** {success|failed|skipped}
+- **Duration:** {duration}
+- **Summary:** {brief summary}
+- **Artifacts:** {links to Obsidian notes created}
+
+{Repeat for each step}
+```
+
+---
+
+## Hook Notes
+
+Stored at `Projects/{ProjectName}/Hooks/{name}.md`:
+
+```markdown
+---
+tags: [autonexus/hook]
+name: {hook-name}
+enabled: true
+priority: 50
+created: {ISO timestamp}
+last_triggered: {ISO timestamp or null}
+trigger_count: {N}
+---
+
+# Hook: {Human-readable Name}
+
+## Description
+{What this hook does and why}
+
+## Trigger
+- **Event:** {event-type}
+- **Condition:** {condition expression}
+
+## Action
+- **Type:** {action-type}
+- **Command:** {if run-command}
+- **Message:** {template with $VARIABLES}
+
+## Execution History
+
+| Date | Event | Context | Action Taken | Result |
+|------|-------|---------|-------------|--------|
+```
+
+Hook notes are updated in place — the `last_triggered`, `trigger_count` frontmatter fields and the Execution History table are appended to after each trigger.
+
+### Local Hook Cache
+
+When hooks are loaded from Obsidian, they are cached to `autonexus-hooks.json` (gitignored). This allows hook evaluation to work even when Obsidian is unavailable in subsequent sessions.
+
+---
+
+## Canvas Notes
+
+Canvas files are written using `obsidian_update_note` with `.canvas` extension. They use the Obsidian Canvas JSON format with `nodes` and `edges` arrays. See `references/canvas-workflow.md` for full canvas type specifications.
+
+Canvas output paths:
+- Architecture: `Projects/{ProjectName}/Canvases/architecture.canvas`
+- Sprint board: `Projects/{ProjectName}/Canvases/sprint-{N}-board.canvas`
+- Dependencies: `Projects/{ProjectName}/Canvases/dependencies.canvas`
+- Timeline: `Projects/{ProjectName}/Canvases/timeline.canvas`
+- Knowledge map: `Projects/{ProjectName}/Canvases/knowledge-map.canvas`
+- Data flow: `Projects/{ProjectName}/Canvases/data-flow.canvas`
+- Pipeline: `Projects/{ProjectName}/Canvases/pipeline-{name}.canvas`
+
+All canvas writes use retry-then-queue protocol. Canvas generation is best-effort.
 
 ---
 

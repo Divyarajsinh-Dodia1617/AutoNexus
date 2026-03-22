@@ -5,11 +5,12 @@
 Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) and [Claude Autoresearch](https://github.com/uditgoenka/autoresearch). AutoNexus adds persistent cross-session knowledge via Obsidian MCP — every iteration reads from and writes to your Obsidian vault. The new **Agile workflow** orchestrates 28+ specialized agents (CEO to Jr. Engineer) through full sprint lifecycles with quality gates, conflict resolution, and Agile ceremonies.
 
 [![Claude Code Skill](https://img.shields.io/badge/Claude_Code-Skill-blue?logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 *"Set the GOAL → Claude runs the LOOP → Knowledge persists in Obsidian → You wake up to results AND understanding."*
 *"Define the BACKLOG → Agents run the SPRINT → Design, build, review, test, ship — like a real MNC team."*
+*"Chain WORKFLOWS → Hook EVENTS → Canvas VISUALIZES → The system drives itself."*
 
 ---
 
@@ -80,6 +81,9 @@ PRE-PUSH: Full knowledge center rebuild (~2-5 min)
 | `/autonexus:ship` | Universal shipping workflow (code, content, marketing, sales, research, design) |
 | `/autonexus:scenario` | Scenario-driven use case generator across 12 dimensions |
 | `/autonexus:learn` | Autonomous documentation engine with Obsidian Knowledge Center sync |
+| `/autonexus:chain` | **Workflow composition** — chain multiple commands into sequential pipelines with conditions |
+| `/autonexus:canvas` | **On-demand Obsidian Canvas** — architecture, sprint, dependency, timeline, knowledge, flow diagrams |
+| `/autonexus:hook` | **Event-driven triggers** — define rules that fire actions when events occur in loops/sprints |
 
 ### Session Management
 
@@ -148,7 +152,7 @@ CPO ─── Product Manager
 /reload-plugins
 ```
 
-That's it. All 15 commands are available immediately.
+That's it. All 18 commands are available immediately.
 
 **Updating:**
 ```
@@ -276,9 +280,24 @@ Projects/
     │       └── Retro.md    ← Retrospective + action items
     ├── Designs/            ← Technical design docs per story
     ├── Reviews/            ← Code review records per story
-    └── Team/               ← Team roster + working agreements
-        ├── Roster.md
-        └── Norms.md
+    ├── Team/               ← Team roster + working agreements
+    │   ├── Roster.md
+    │   └── Norms.md
+    │
+    │   ── Automation ──────────────────────────────
+    │
+    ├── Pipelines/          ← Chain pipeline definitions
+    │   ├── {name}.md       ← Pipeline definition (steps, conditions)
+    │   └── runs/           ← Pipeline run logs
+    ├── Hooks/              ← Event-driven trigger definitions
+    │   └── {name}.md       ← Hook definition (event, condition, action)
+    └── Canvases/           ← Generated visual diagrams
+        ├── architecture.canvas
+        ├── sprint-{N}-board.canvas
+        ├── dependencies.canvas
+        ├── timeline.canvas
+        ├── knowledge-map.canvas
+        └── pipeline-{name}.canvas
 Cross-Project/              ← Patterns across all projects
 Daily Notes/                ← Enhanced session entries with backlinks
 ```
@@ -294,6 +313,41 @@ Daily Notes/                ← Enhanced session entries with backlinks
 - **Predict personas persist:** Each persona's analysis becomes a permanent, searchable Obsidian note.
 - **Strategy learning:** The loop learns from past sessions — which change types succeed vs fail in your project — and biases ideation accordingly.
 - **Canvas visualizations:** Auto-generated `.canvas` files for predict debate maps and session flow diagrams.
+
+---
+
+## v0.3.0 Features — Automation & Visualization
+
+### Workflow Composition (`/autonexus:chain`)
+- **Pipeline engine** — Chain any autonexus commands into sequential workflows: `predict → agile → review → ship`
+- **5 built-in templates** — full-sprint, quality-audit, release-prep, deep-analysis, continuous-quality
+- **Conditional steps** — `?on-success`, `?on-failure`, `?always`, `?if-metric-above:N` conditions per step
+- **Failure handling** — `!halt`, `!skip`, `!retry:N` per step
+- **Saved pipelines** — Define once in Obsidian, reuse across sessions. `--save`, `--pipeline`, `--list`
+- **Resumable** — Interrupted pipelines resume from last completed step with `--resume`
+- **Pipeline run logs** — Every run produces a detailed log in Obsidian with per-step results and artifacts
+
+### On-Demand Canvas (`/autonexus:canvas`)
+- **7 canvas types** — Architecture, Sprint Board, Dependency Graph, Timeline, Knowledge Map, Data Flow, Pipeline
+- **Architecture canvas** — Component relationships color-coded by risk level, hierarchical layout
+- **Sprint board canvas** — Kanban visualization of story cards with blocking relationships
+- **Dependency canvas** — Import/dependency graph from codebase analysis
+- **Timeline canvas** — Session history over time with keep-rate color coding
+- **Knowledge map canvas** — All Obsidian project notes with backlink connections, clustered by type
+- **Data flow canvas** — Entry points → processors → data stores → outputs
+- **Pipeline canvas** — Visual pipeline step flow with status colors
+
+### Event-Driven Hooks (`/autonexus:hook`)
+- **12 event types** — iteration-complete, consecutive-discards, consecutive-crashes, keep-rate-drop, metric-threshold, goal-achieved, session-end, finding-created, story-complete, gate-failed, sprint-end, pipeline-step-failed
+- **7 action types** — run-command, create-note, create-story, tag-note, alert, pause, log
+- **7 built-in templates** — auto-debug-on-crashes, backlog-from-findings, pause-on-low-keep-rate, celebrate-goal, auto-fix-on-guard-fail, auto-review-on-session-end, escalate-gate-failures
+- **Variable substitution** — `$METRIC`, `$SEVERITY`, `$KEEP_RATE`, etc. in all action fields
+- **Condition expressions** — `count >= 3`, `severity in ["CRITICAL", "HIGH"]`, `keep_rate < 20`, AND combinations
+- **Priority ordering** — Lower priority number fires first; hooks evaluated in order
+- **Local cache** — `autonexus-hooks.json` enables hook evaluation even when Obsidian is unavailable
+- **Management CLI** — `--add`, `--list`, `--enable`, `--disable`, `--remove`, `--history`, `--dry-run`
+- **Non-blocking** — Hook actions never block the loop; failures are logged and skipped
+- **Circular protection** — Max 1 trigger per hook per iteration prevents infinite loops
 
 ---
 
@@ -391,6 +445,18 @@ A: The orchestrator detects the conflict and automatically spawns the appropriat
 
 **Q: Can I run just the planning ceremony?**
 A: Yes — `--phase planning` runs only sprint planning. Same for `--phase review` and `--phase retro`.
+
+**Q: Can I chain commands without Obsidian?**
+A: Yes — inline pipelines and built-in templates work without Obsidian. You just can't save/load pipelines or generate run logs. Use `--template full-sprint` to get started.
+
+**Q: Do hooks work without Obsidian?**
+A: Hook management (add/list/remove) requires Obsidian. But hook evaluation during loops works offline — hooks are cached locally in `autonexus-hooks.json` at session start.
+
+**Q: Can hooks trigger other hooks?**
+A: Yes, but with protection — each hook can fire at most once per iteration to prevent infinite loops. A `run-command` action that triggers the same event type won't re-fire the same hook.
+
+**Q: What canvas types are available?**
+A: Architecture (component relationships), Sprint (kanban board), Dependency (import graph), Timeline (session history), Knowledge (all notes with links), Flow (data flow), and Pipeline (workflow steps).
 
 ---
 

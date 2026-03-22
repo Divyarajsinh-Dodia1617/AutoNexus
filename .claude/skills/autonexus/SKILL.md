@@ -1,7 +1,7 @@
 ---
 name: autonexus
 description: Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone. Loops autonomously — modify, verify, keep/discard, repeat — with Obsidian reads/writes every iteration for persistent cross-session knowledge.
-version: 0.2.0
+version: 0.3.0
 ---
 
 # AutoNexus — Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone
@@ -67,6 +67,9 @@ For ALL commands:
 | `/autonexus:review` | (none — session picker) | Presents recent sessions, user picks one for analysis |
 | `/autonexus:agile` | Project, Backlog, Team, Sprint Goal | 5 batched questions per `references/agile-workflow.md` |
 | `/autonexus:refine-backlog` | Action, Scope | 2 batched questions per `references/refine-backlog-workflow.md` |
+| `/autonexus:chain` | Steps or Pipeline name | 3 batched questions per `references/chain-workflow.md` |
+| `/autonexus:canvas` | Canvas Type | 2 batched questions per `references/canvas-workflow.md` |
+| `/autonexus:hook` | (none for --list; varies for --add) | 3+2 batched questions per `references/hook-workflow.md` |
 
 **YOU MUST NOT start any loop, phase, or execution without completing interactive setup when context is missing.**
 
@@ -89,6 +92,9 @@ For ALL commands:
 | `/autonexus:review` | Post-session analysis — pattern detection, lessons learned, session flow canvas |
 | `/autonexus:agile` | Full Agile sprint lifecycle with autonomous agent team |
 | `/autonexus:refine-backlog` | Interactive backlog grooming with agent assistance |
+| `/autonexus:chain` | Workflow composition — chain multiple commands into a pipeline |
+| `/autonexus:canvas` | On-demand Obsidian Canvas generation (architecture, sprint, dependency, etc.) |
+| `/autonexus:hook` | Event-driven triggers — define rules that fire actions on events |
 
 ## When to Activate
 
@@ -121,6 +127,12 @@ For ALL commands:
 - User invokes `/autonexus:refine-backlog` → run the backlog refinement workflow
 - User says "run a sprint", "agile sprint", "start sprint", "team sprint", "run the team" → run the agile workflow
 - User says "refine backlog", "groom stories", "add stories", "update backlog", "create user stories" → run the backlog refinement workflow
+- User invokes `/autonexus:chain` → run the chain workflow
+- User invokes `/autonexus:canvas` → run the canvas workflow
+- User invokes `/autonexus:hook` → run the hook workflow
+- User says "chain commands", "run a pipeline", "compose workflows", "run predict then agile" → run the chain workflow
+- User says "generate a canvas", "visualize architecture", "draw a diagram", "dependency graph", "sprint board canvas", "knowledge map" → run the canvas workflow
+- User says "add a hook", "create a trigger", "list hooks", "when crashes happen", "auto-fix on errors" → run the hook workflow
 - User says "work autonomously", "iterate until done", "keep improving", "run overnight" → run the loop
 - Any task requiring repeated iteration cycles with measurable outcomes → run the loop
 
