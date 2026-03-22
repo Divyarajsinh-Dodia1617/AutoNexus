@@ -71,16 +71,50 @@ PRE-PUSH: Full knowledge center rebuild (~2-5 min)
 - [Obsidian](https://obsidian.md) desktop app
 - [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api) Obsidian community plugin enabled
 
-### 2. Configure Obsidian MCP
+### 2. Install AutoNexus
 
-Add to your Claude Code MCP config (`.mcp.json`):
+**Option A — Plugin marketplace (recommended):**
+
+```
+/plugin marketplace add Divyarajsinh-Dodia1617/AutoNexus
+/plugin install autonexus@autonexus
+/reload-plugins
+```
+
+That's it. All 10 commands are available immediately.
+
+**Updating:**
+```
+/plugin update autonexus@autonexus
+/reload-plugins
+```
+
+**Option B — Manual copy:**
+
+```bash
+git clone https://github.com/Divyarajsinh-Dodia1617/AutoNexus.git
+
+# Copy to your project
+cp -r AutoNexus/claude-plugin/skills/autonexus .claude/skills/autonexus
+cp -r AutoNexus/claude-plugin/commands/autonexus .claude/commands/autonexus
+cp AutoNexus/claude-plugin/commands/autonexus.md .claude/commands/autonexus.md
+```
+
+### 3. Configure Obsidian MCP
+
+Run the setup wizard (easiest):
+```
+/autonexus:setup
+```
+
+Or manually add to your `.mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "obsidian-mcp-server": {
       "command": "npx",
-      "args": ["obsidian-mcp-server"],
+      "args": ["-y", "obsidian-mcp-server"],
       "env": {
         "OBSIDIAN_API_KEY": "<your API key from Local REST API plugin>",
         "OBSIDIAN_BASE_URL": "https://127.0.0.1:27124",
@@ -92,16 +126,7 @@ Add to your Claude Code MCP config (`.mcp.json`):
 }
 ```
 
-### 3. Install AutoNexus
-
-```bash
-git clone https://github.com/Divyarajsinh-Dodia1617/AutoNexus.git
-
-# Copy to your project
-cp -r autonexus/claude-plugin/skills/autonexus .claude/skills/autonexus
-cp -r autonexus/claude-plugin/commands/autonexus .claude/commands/autonexus
-cp autonexus/claude-plugin/commands/autonexus.md .claude/commands/autonexus.md
-```
+> **Obsidian is optional.** AutoNexus works fully without it — you just don't get persistent knowledge. Run `/autonexus:setup` anytime to enable it.
 
 ### 4. Run It
 

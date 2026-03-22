@@ -5,19 +5,45 @@
   "description": "AutoNexus — autonomous goal-directed iteration engine with Obsidian as knowledge backbone. Inspired by Karpathy's autoresearch.",
   "owner": {
     "name": "Divyarajsinh Dodia",
+    "email": "divyarajsinh.dodia@outlook.com",
     "url": "https://github.com/Divyarajsinh-Dodia1617"
+  },
+  "metadata": {
+    "description": "AutoNexus plugin marketplace — autonomous iteration with Obsidian knowledge backbone",
+    "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "autonexus",
-      "description": "Autonomous iteration engine with Obsidian MCP integration. 9 commands: /autonexus (core loop), /autonexus:plan (goal wizard), /autonexus:predict (multi-persona swarm), /autonexus:debug (bug hunter), /autonexus:fix (error crusher), /autonexus:security (STRIDE+OWASP audit), /autonexus:ship (universal shipping), /autonexus:scenario (edge case explorer), /autonexus:learn (documentation engine). Every iteration reads from and writes to Obsidian.",
+      "description": "Autonomous iteration engine with Obsidian MCP integration. 10 commands: /autonexus (core loop), /autonexus:plan (goal wizard), /autonexus:predict (multi-persona swarm), /autonexus:debug (bug hunter), /autonexus:fix (error crusher), /autonexus:security (STRIDE+OWASP audit), /autonexus:ship (universal shipping), /autonexus:scenario (edge case explorer), /autonexus:learn (documentation engine), /autonexus:setup (Obsidian MCP configurator). Every iteration reads from and writes to Obsidian.",
       "version": "0.1.0",
       "author": {
-        "name": "Divya",
-        "url": "https://github.com/divya"
+        "name": "Divyarajsinh Dodia",
+        "email": "divyarajsinh.dodia@outlook.com",
+        "url": "https://github.com/Divyarajsinh-Dodia1617"
       },
       "source": "./claude-plugin",
-      "category": "productivity"
+      "category": "productivity",
+      "homepage": "https://github.com/Divyarajsinh-Dodia1617/AutoNexus",
+      "repository": "https://github.com/Divyarajsinh-Dodia1617/AutoNexus",
+      "license": "MIT",
+      "keywords": [
+        "autonomous",
+        "iteration",
+        "obsidian",
+        "knowledge-management",
+        "optimization",
+        "decision-records",
+        "debugging",
+        "security-audit",
+        "documentation"
+      ],
+      "tags": [
+        "autonomous-loop",
+        "obsidian-mcp",
+        "code-quality",
+        "productivity"
+      ]
     }
   ]
 }

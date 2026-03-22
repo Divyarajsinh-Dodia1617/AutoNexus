@@ -1,9 +1,10 @@
 {
   "name": "autonexus",
-  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 9 commands: core loop, plan, predict, debug, fix, security, ship, scenario, learn. Every iteration reads from and writes to Obsidian.",
+  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 10 commands: core loop, plan, predict, debug, fix, security, ship, scenario, learn, setup. Every iteration reads from and writes to Obsidian.",
   "version": "0.1.0",
   "author": {
     "name": "Divyarajsinh Dodia",
+    "email": "divyarajsinh.dodia@outlook.com",
     "url": "https://github.com/Divyarajsinh-Dodia1617"
   },
   "repository": "https://github.com/Divyarajsinh-Dodia1617/AutoNexus",
@@ -15,6 +16,11 @@
     "obsidian",
     "knowledge-management",
     "optimization",
-    "decision-records"
-  ]
+    "decision-records",
+    "debugging",
+    "security-audit",
+    "documentation"
+  ],
+  "commands": "./commands/",
+  "skills": "./skills/"
 }
