@@ -12,16 +12,35 @@ Inspired by Karpathy's autoresearch. Applies constraint-driven autonomous iterat
 
 ## MANDATORY: Obsidian MCP Prerequisite
 
-At session start (Phase 0), check Obsidian MCP availability:
+At session start (Phase 0), perform a TWO-STEP check:
 
+**Step A — Tool Existence Check:**
+Before calling any Obsidian MCP tool, check whether Obsidian MCP tools are available in your current tool set. Look for tools named `obsidian_read_note`, `obsidian_update_note`, `obsidian_global_search`, `obsidian_list_notes`.
+
+```
+IF obsidian MCP tools are NOT in your available tool set:
+  SET OBSIDIAN_AVAILABLE = false
+  SET OBSIDIAN_NOT_CONFIGURED = true
+  WARN once: "Obsidian MCP is not configured. AutoNexus is running in local-only mode.
+              The autonomous loop works fully without Obsidian — you get git + TSV tracking.
+              To enable persistent knowledge in Obsidian, see the Getting Started guide:
+              1. Install Obsidian + Local REST API plugin
+              2. Add obsidian-mcp-server to your .mcp.json
+              3. Restart Claude Code"
+  SKIP all remaining Obsidian Phase 0 steps
+  DO NOT attempt any Obsidian MCP calls for the entire session
+```
+
+**Step B — Connectivity Check (only if tools exist):**
 ```
 TRY: obsidian_list_notes({ dirPath: "Projects/", recursionDepth: 0 })
 SUCCESS → OBSIDIAN_AVAILABLE = true
 FAILURE → OBSIDIAN_AVAILABLE = false
-  WARN once: "Obsidian MCP unavailable. Running in local-only mode."
+  WARN once: "Obsidian MCP tools found but connection failed. Running in local-only mode.
+              Check that Obsidian is open and Local REST API plugin is enabled."
 ```
 
-If unavailable, ALL Obsidian operations become no-ops. The loop runs normally with git + local TSV. Do NOT prompt the user to fix it mid-session.
+If unavailable (either step), ALL Obsidian operations become no-ops. The loop runs normally with git + local TSV. AutoNexus is a **fully functional** iteration engine without Obsidian — Obsidian adds persistent knowledge but is never required. Do NOT prompt the user to fix it mid-session.
 
 ## MANDATORY: Interactive Setup Gate
 

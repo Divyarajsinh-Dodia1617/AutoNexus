@@ -140,7 +140,28 @@ IF all items drained: delete obsidian-sync-queue.md
 
 Run these steps at the start of every AutoNexus session, BEFORE the loop begins.
 
-### Step 1: Obsidian Connectivity Check
+### Step 1: Tool Existence Check
+
+Before calling any Obsidian MCP tool, check whether Obsidian MCP tools exist in the current tool set. Look for tools named `obsidian_read_note`, `obsidian_update_note`, `obsidian_global_search`, `obsidian_list_notes`.
+
+```
+IF obsidian MCP tools are NOT in available tool set:
+  SET OBSIDIAN_AVAILABLE = false
+  SET OBSIDIAN_NOT_CONFIGURED = true
+  WARN once: "Obsidian MCP is not configured. AutoNexus is running in local-only mode.
+              The autonomous loop works fully without Obsidian — you get git + TSV tracking.
+              To enable persistent knowledge in Obsidian, see the Getting Started guide:
+              1. Install Obsidian + Local REST API plugin
+              2. Add obsidian-mcp-server to your .mcp.json
+              3. Restart Claude Code"
+  SKIP Steps 2-5 entirely
+  DO NOT attempt any Obsidian MCP calls for the entire session
+  PROCEED directly to loop setup
+```
+
+This handles the case where a user installs AutoNexus but has no Obsidian setup at all. The plugin works fully — they just don't get persistent knowledge.
+
+### Step 1b: Connectivity Check (only if tools exist)
 
 ```
 TRY:
@@ -149,11 +170,12 @@ TRY:
   LOG "Obsidian vault connected."
 CATCH:
   SET OBSIDIAN_AVAILABLE = false
-  WARN (once): "Obsidian MCP unavailable. Running in local-only mode.
+  WARN (once): "Obsidian MCP tools found but connection failed. Running in local-only mode.
+                Check that Obsidian is open and Local REST API plugin is enabled.
                 Local TSV + git continue normally. Obsidian writes queued."
 ```
 
-If `OBSIDIAN_AVAILABLE = false`, ALL Obsidian operations in this session become no-ops. Do NOT prompt the user to fix it. Do NOT retry during the session. Log the warning once and proceed.
+If `OBSIDIAN_AVAILABLE = false` (from either step), ALL Obsidian operations in this session become no-ops. Do NOT prompt the user to fix it. Do NOT retry during the session. Log the warning once and proceed.
 
 ### Step 2: Drain Sync Queue
 
@@ -680,15 +702,36 @@ Write to: `Cross-Project/{slug}.md`
 
 ## Obsidian Unavailable Fallback
 
-When `OBSIDIAN_AVAILABLE = false` (set at Phase 0):
+There are two distinct unavailable states:
+
+### State A: Obsidian MCP Not Configured (`OBSIDIAN_NOT_CONFIGURED = true`)
+
+The user installed AutoNexus but has no Obsidian MCP server in their `.mcp.json`. The Obsidian tools don't exist in Claude's tool set at all.
+
+1. ALL Obsidian operations are skipped entirely (no tool calls attempted, no retry, no queue)
+2. Local TSV logging + git-as-memory work exactly as normal
+3. The single warning from Phase 0 Step 1 is sufficient
+4. Do NOT create `obsidian-sync-queue.md` (there's nothing to queue — the tools don't exist)
+5. AutoNexus runs as a fully functional iteration engine identical to autoresearch
+6. When session ends, note: "Obsidian MCP not configured. Running in local-only mode."
+
+### State B: Obsidian MCP Configured But Unavailable (`OBSIDIAN_AVAILABLE = false`)
+
+The tools exist but the connection failed (Obsidian closed, wrong API key, etc.).
 
 1. ALL Obsidian MCP calls become immediate no-ops (return null, no retry, no queue)
-2. Local TSV logging continues exactly as normal
-3. Git-as-memory continues exactly as normal
-4. The single warning from Phase 0 is sufficient — do NOT:
-   - Repeat the warning every iteration
-   - Ask the user to fix it
-   - Suggest restarting Obsidian
-   - Degrade loop behavior in any other way
-5. The loop runs identically to a non-Obsidian system — just without knowledge persistence
-6. When the session ends, note in the summary: "Obsidian was unavailable this session. Knowledge notes were not written."
+2. Local TSV logging + git-as-memory continue exactly as normal
+3. The single warning from Phase 0 Step 1b is sufficient
+4. Failed writes DO get queued to `obsidian-sync-queue.md` (tools exist, connection may recover)
+5. The loop runs identically to a non-Obsidian system
+6. When session ends, note: "Obsidian was unavailable this session. Knowledge notes were not written. Queued operations saved for next session."
+
+### In Both States, Do NOT:
+
+- Repeat the warning every iteration
+- Ask the user to fix it mid-session
+- Suggest restarting Obsidian
+- Degrade loop behavior in any other way
+- Refuse to run because Obsidian isn't available
+
+**AutoNexus is a fully functional autonomous iteration engine with or without Obsidian. Obsidian adds persistent knowledge — it is never a prerequisite.**
