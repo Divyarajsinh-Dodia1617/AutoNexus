@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "autonexus",
-      "description": "Autonomous iteration engine with Obsidian MCP integration. /autonexus runs an unlimited modify-verify-keep/discard loop with Obsidian reads/writes every iteration. Includes /autonexus:plan (goal wizard) and /autonexus:predict (multi-persona swarm with persona notes in Obsidian).",
+      "description": "Autonomous iteration engine with Obsidian MCP integration. 9 commands: /autonexus (core loop), /autonexus:plan (goal wizard), /autonexus:predict (multi-persona swarm), /autonexus:debug (bug hunter), /autonexus:fix (error crusher), /autonexus:security (STRIDE+OWASP audit), /autonexus:ship (universal shipping), /autonexus:scenario (edge case explorer), /autonexus:learn (documentation engine). Every iteration reads from and writes to Obsidian.",
       "version": "0.1.0",
       "author": {
         "name": "Divya",

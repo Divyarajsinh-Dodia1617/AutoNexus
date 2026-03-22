@@ -1,6 +1,6 @@
 {
   "name": "autonexus",
-  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 3 commands: core loop, plan wizard, multi-persona predict. Every iteration reads from and writes to Obsidian.",
+  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 9 commands: core loop, plan, predict, debug, fix, security, ship, scenario, learn. Every iteration reads from and writes to Obsidian.",
   "version": "0.1.0",
   "author": {
     "name": "Divya",
