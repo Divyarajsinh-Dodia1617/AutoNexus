@@ -10,6 +10,12 @@ Comprehensive documentation for every AutoNexus command.
 | [/autonexus](autonexus.md) | Core autonomous loop with Obsidian integration |
 | [/autonexus:plan](autonexus-plan.md) | Goal → config wizard |
 | [/autonexus:predict](autonexus-predict.md) | Multi-persona swarm with Obsidian persona notes |
+| [/autonexus:debug](autonexus-debug.md) | Autonomous bug-hunting loop |
+| [/autonexus:fix](autonexus-fix.md) | Autonomous error repair |
+| [/autonexus:security](autonexus-security.md) | STRIDE + OWASP security audit |
+| [/autonexus:ship](autonexus-ship.md) | Universal shipping workflow |
+| [/autonexus:scenario](autonexus-scenario.md) | Scenario-driven use case generator |
+| [/autonexus:learn](autonexus-learn.md) | Autonomous documentation engine |
 
 ## Quick Decision Guide
 
@@ -18,4 +24,12 @@ Comprehensive documentation for every AutoNexus command.
 | Improve a metric autonomously | `/autonexus` |
 | Don't know what metric to use | `/autonexus:plan` |
 | Get expert opinions before starting | `/autonexus:predict` |
+| Hunt all bugs in a codebase | `/autonexus:debug` |
+| Fix all errors (tests, types, lint) | `/autonexus:fix` |
+| Run a security audit | `/autonexus:security` |
+| Ship a PR / deployment / release | `/autonexus:ship` |
+| Explore edge cases for a feature | `/autonexus:scenario` |
+| Generate docs for a codebase | `/autonexus:learn` |
 | Predict then debug | `/autonexus:predict --chain debug` |
+| Debug then auto-fix | `/autonexus:debug --fix` |
+| Full pipeline | `/autonexus:predict --chain scenario,debug,fix` then `/autonexus:ship` |

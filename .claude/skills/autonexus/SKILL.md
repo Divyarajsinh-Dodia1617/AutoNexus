@@ -37,7 +37,13 @@ For ALL commands:
 |---------|-----------------|-----------------|
 | `/autonexus` | Goal, Scope, Metric, Direction, Verify | Batch 1 (4 questions) + Batch 2 (3 questions) from Setup Phase below |
 | `/autonexus:plan` | Goal | Ask via `AskUserQuestion` per `references/plan-workflow.md` |
+| `/autonexus:debug` | Issue/Symptom, Scope | 4 batched questions per `references/debug-workflow.md` |
+| `/autonexus:fix` | Target, Scope | 4 batched questions per `references/fix-workflow.md` |
+| `/autonexus:security` | Scope, Depth | 3 batched questions per `references/security-workflow.md` |
+| `/autonexus:ship` | What/Type, Mode | 3 batched questions per `references/ship-workflow.md` |
+| `/autonexus:scenario` | Scenario, Domain | 4-8 adaptive questions per `references/scenario-workflow.md` |
 | `/autonexus:predict` | Scope, Goal, Depth | 3-4 batched questions per `references/predict-workflow.md` |
+| `/autonexus:learn` | Mode, Scope | 4 batched questions per `references/learn-workflow.md` |
 
 **YOU MUST NOT start any loop, phase, or execution without completing interactive setup when context is missing.**
 
@@ -48,25 +54,32 @@ For ALL commands:
 | `/autonexus` | Run the autonomous loop with Obsidian integration (default) |
 | `/autonexus:plan` | Interactive wizard: Goal → Scope, Metric, Direction, Verify config |
 | `/autonexus:predict` | Multi-persona swarm prediction with persona notes in Obsidian |
-
-### Phase 2 (Future)
-
-| Subcommand | Purpose | Status |
-|------------|---------|--------|
-| `/autonexus:debug` | Autonomous bug-hunting loop | Planned |
-| `/autonexus:fix` | Autonomous error repair loop | Planned |
-| `/autonexus:security` | STRIDE + OWASP security audit | Planned |
-| `/autonexus:ship` | Universal shipping workflow | Planned |
-| `/autonexus:scenario` | Scenario-driven use case generator | Planned |
-| `/autonexus:learn` | Autonomous documentation engine | Planned |
+| `/autonexus:debug` | Autonomous bug-hunting loop: scientific method + iterative investigation |
+| `/autonexus:fix` | Autonomous fix loop: iteratively repair errors until zero remain |
+| `/autonexus:security` | Autonomous security audit: STRIDE + OWASP Top 10 + red-team personas |
+| `/autonexus:ship` | Universal shipping workflow: code, content, marketing, sales, research, design |
+| `/autonexus:scenario` | Scenario-driven use case generator: explore situations, edge cases, derivatives |
+| `/autonexus:learn` | Autonomous documentation engine: scout, learn, generate/update docs, validate |
 
 ## When to Activate
 
 - User invokes `/autonexus` → run the loop
 - User invokes `/autonexus:plan` → run the planning wizard
 - User invokes `/autonexus:predict` → run the predict workflow
+- User invokes `/autonexus:debug` → run the debug loop
+- User invokes `/autonexus:fix` → run the fix loop
+- User invokes `/autonexus:security` → run the security audit
+- User invokes `/autonexus:ship` → run the ship workflow
+- User invokes `/autonexus:scenario` → run the scenario loop
+- User invokes `/autonexus:learn` → run the learn workflow
 - User says "help me set up autonexus", "plan a run" → run the planning wizard
 - User says "predict", "multi-perspective", "swarm analysis", "what do experts think" → run the predict workflow
+- User says "find all bugs", "hunt bugs", "debug this", "why is this failing" → run the debug loop
+- User says "fix all errors", "make tests pass", "fix the build", "clean up errors" → run the fix loop
+- User says "security audit", "threat model", "OWASP", "STRIDE", "find vulnerabilities" → run the security audit
+- User says "ship it", "deploy this", "publish this", "launch this" → run the ship workflow
+- User says "explore scenarios", "generate use cases", "what could go wrong", "edge cases" → run the scenario loop
+- User says "learn this codebase", "generate docs", "document this project", "update docs" → run the learn workflow
 - User says "work autonomously", "iterate until done", "keep improving", "run overnight" → run the loop
 - Any task requiring repeated iteration cycles with measurable outcomes → run the loop
 
@@ -186,6 +199,12 @@ See `references/core-principles.md` for the 9 principles (7 from autoresearch + 
 | Blog/content | Word count + readability | `content/*.md` | Custom script | — |
 | Performance | Benchmark time (ms) | Target files | `npm run bench` | `npm test` |
 | Refactoring | Tests pass + LOC reduced | Target module | `npm test && wc -l` | `npm run typecheck` |
+| Security | OWASP + STRIDE coverage | API/auth/middleware | `/autonexus:security` | — |
+| Shipping | Checklist pass rate (%) | Any artifact | `/autonexus:ship` | Domain-specific |
+| Debugging | Bugs found + coverage | Target files | `/autonexus:debug` | — |
+| Fixing | Error count (lower) | Target files | `/autonexus:fix` | `npm test` |
+| Scenarios | Use cases + edge cases | Feature/domain files | `/autonexus:scenario` | — |
 | Prediction | Findings + hypotheses | Target files | `/autonexus:predict` | — |
+| Documentation | Validation pass rate | `docs/*.md` | `/autonexus:learn` | `npm test` |
 
 Adapt the loop to your domain. The PRINCIPLES are universal; the METRICS are domain-specific.
