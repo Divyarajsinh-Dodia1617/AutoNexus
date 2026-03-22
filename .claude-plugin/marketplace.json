@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "autonexus",
+  "version": "0.1.0",
+  "description": "AutoNexus — autonomous goal-directed iteration engine with Obsidian as knowledge backbone. Inspired by Karpathy's autoresearch.",
+  "owner": {
+    "name": "Divya",
+    "url": "https://github.com/divya"
+  },
+  "plugins": [
+    {
+      "name": "autonexus",
+      "description": "Autonomous iteration engine with Obsidian MCP integration. /autonexus runs an unlimited modify-verify-keep/discard loop with Obsidian reads/writes every iteration. Includes /autonexus:plan (goal wizard) and /autonexus:predict (multi-persona swarm with persona notes in Obsidian).",
+      "version": "0.1.0",
+      "author": {
+        "name": "Divya",
+        "url": "https://github.com/divya"
+      },
+      "source": "./claude-plugin",
+      "category": "productivity"
+    }
+  ]
+}

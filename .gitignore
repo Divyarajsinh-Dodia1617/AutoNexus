@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude Code local state
+.claude/agents/
+.claude/hooks/
+.claude/metadata.json
+.claude/rules/
+.claude/skills/*
+!.claude/skills/autonexus/
+
+# AutoNexus runtime artifacts
+obsidian-sync-queue.md
+*-results.tsv
+*.log
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
