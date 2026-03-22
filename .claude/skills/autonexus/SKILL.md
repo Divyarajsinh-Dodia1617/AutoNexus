@@ -1,7 +1,7 @@
 ---
 name: autonexus
 description: Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone. Loops autonomously — modify, verify, keep/discard, repeat — with Obsidian reads/writes every iteration for persistent cross-session knowledge.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # AutoNexus — Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone
@@ -62,6 +62,9 @@ For ALL commands:
 | `/autonexus:predict` | Scope, Goal, Depth | 3-4 batched questions per `references/predict-workflow.md` |
 | `/autonexus:learn` | Mode, Scope | 4 batched questions per `references/learn-workflow.md` |
 | `/autonexus:setup` | (none — self-guided wizard) | Walks user through Obsidian MCP config automatically |
+| `/autonexus:resume` | (none — session picker) | Presents recent sessions from Obsidian, user picks one |
+| `/autonexus:status` | (none — read-only) | No setup needed — queries Obsidian and prints dashboard |
+| `/autonexus:review` | (none — session picker) | Presents recent sessions, user picks one for analysis |
 
 **YOU MUST NOT start any loop, phase, or execution without completing interactive setup when context is missing.**
 
@@ -79,6 +82,9 @@ For ALL commands:
 | `/autonexus:scenario` | Scenario-driven use case generator: explore situations, edge cases, derivatives |
 | `/autonexus:learn` | Autonomous documentation engine: scout, learn, generate/update docs, validate |
 | `/autonexus:setup` | One-time setup wizard: configure Obsidian MCP (API key, platform detection, .mcp.json) |
+| `/autonexus:resume` | Resume a previous session from Obsidian — reload config, pick up from last metric |
+| `/autonexus:status` | Read-only project dashboard — session history, knowledge freshness, strategy profile |
+| `/autonexus:review` | Post-session analysis — pattern detection, lessons learned, session flow canvas |
 
 ## When to Activate
 
@@ -99,7 +105,13 @@ For ALL commands:
 - User says "ship it", "deploy this", "publish this", "launch this" → run the ship workflow
 - User says "explore scenarios", "generate use cases", "what could go wrong", "edge cases" → run the scenario loop
 - User says "learn this codebase", "generate docs", "document this project", "update docs" → run the learn workflow
+- User invokes `/autonexus:resume` → run the resume workflow
+- User invokes `/autonexus:status` → run the status dashboard
+- User invokes `/autonexus:review` → run the review workflow
 - User invokes `/autonexus:setup` → run the setup wizard
+- User says "resume", "continue where I left off", "pick up from last session" → run the resume workflow
+- User says "status", "dashboard", "how's the project", "show progress" → run the status dashboard
+- User says "review session", "what happened", "analyze last run", "lessons learned" → run the review workflow
 - User says "setup obsidian", "configure obsidian", "connect obsidian", "setup autonexus" → run the setup wizard
 - User says "work autonomously", "iterate until done", "keep improving", "run overnight" → run the loop
 - Any task requiring repeated iteration cycles with measurable outcomes → run the loop

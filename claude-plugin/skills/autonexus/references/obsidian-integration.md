@@ -175,30 +175,113 @@ CATCH:
 
 If `OBSIDIAN_AVAILABLE = false` (from either step), ALL Obsidian operations in this session become no-ops. Do NOT prompt the user to fix it. Do NOT retry during the session. Log the warning once and proceed.
 
+### Step 1c: Knowledge Decay Check (#22)
+
+After confirming Obsidian is connected (`OBSIDIAN_AVAILABLE = true`), check whether the Knowledge Center is stale relative to the current codebase:
+
+```
+Read Knowledge Center Architecture.md frontmatter:
+  obsidian_manage_frontmatter({ filePath: "Projects/{ProjectName}/Knowledge/Architecture.md", operation: "get", key: "commit_hash" })
+
+Compare with current git rev-parse HEAD.
+Count commits between: git rev-list --count {cached_hash}..HEAD
+
+IF commits_behind > 20 OR days_since_update > 14:
+  WARN: "Knowledge Center is {N} commits behind HEAD (last updated {date}).
+         Suggest running /autonexus:learn --mode update after this session."
+ELIF commits_behind > 5:
+  INFO: "Knowledge Center is {N} commits behind. Still usable but may miss recent changes."
+ELSE:
+  (silent — knowledge is fresh)
+```
+
+If the Architecture.md note does not exist yet (first run), skip this check silently — the Knowledge Center will be created during the first pre-push rebuild.
+
 ### Step 2: Drain Sync Queue
 
 If `obsidian-sync-queue.md` exists from a previous session:
 - Attempt full drain per the Queue Drain Protocol
 - Log results: "Drained {N}/{M} queued operations from previous session"
 
-### Step 3: Archive Old Sessions
+### Step 3: Smart Archival (#21)
 
-Move iteration notes older than 30 days to Archive/.
+Archive iteration notes using relevance scoring instead of blanket 30-day removal.
+
+#### Relevance Scoring
+
+Each iteration note receives a relevance score before archival decisions are made:
+
+```
+FOR each iteration note older than 14 days:
+  score = 1  (base score)
+
+  # Check if linked from a Decision note (backlink check)
+  obsidian_global_search({
+    query: "{note filename}",
+    searchInPath: "Projects/{ProjectName}/Decisions/",
+    contextLength: 50,
+    pageSize: 5
+  })
+  IF results contain a link to this note:
+    score += 10
+
+  # Check frontmatter for "important" tag
+  obsidian_manage_tags({
+    filePath: "{note path}",
+    operation: "list"
+  })
+  IF tags include "autonexus/important":
+    SKIP — this note is NEVER archived regardless of age
+
+  IF tags include "important":
+    score += 5
+
+  # Check frontmatter status
+  obsidian_manage_frontmatter({
+    filePath: "{note path}",
+    operation: "get",
+    key: "status"
+  })
+  IF status == "keep":
+    score += 3
+
+  # Age decay: subtract 1 per week of age
+  weeks_old = floor((today - note_date) / 7)
+  score -= weeks_old
+```
+
+#### Archive Threshold
+
+Notes with `relevance score <= 0` are archived. Notes tagged `autonexus/important` are **NEVER** archived regardless of score or age.
+
+#### MCP Call Budget
+
+Track the number of MCP calls made during relevance scoring. If the count exceeds 20, stop scoring and fall back to simple 30-day rule for remaining notes:
+
+```
+IF mcp_call_count > 20:
+  WARN: "Relevance scoring exceeded MCP budget (20 calls). Falling back to 30-day rule for remaining notes."
+  FOR remaining unscored notes:
+    IF (today - note_date) > 30 days:
+      Mark for archival
+```
+
+#### Archival Process
 
 ```
 1. List date folders:
    obsidian_list_notes({ dirPath: "Projects/{ProjectName}/Iterations/", recursionDepth: 0 })
 
 2. For each folder with name matching YYYY-MM-DD pattern:
-   Parse the date. If (today - date) > 30 days → mark for archival.
+   Parse the date. If (today - date) > 14 days → score notes for archival.
 
 3. Cap at 5 folders per session start (avoid long Phase 0).
 
-4. For each folder to archive:
+4. For each note with relevance score <= 0 (or matching 30-day fallback):
    a. List files in the folder:
       obsidian_list_notes({ dirPath: "Projects/{ProjectName}/Iterations/{date}/", recursionDepth: 0 })
 
-   b. For each file:
+   b. For each file marked for archival:
       i.   Read: obsidian_read_note({ filePath: "Projects/{ProjectName}/Iterations/{date}/{file}" })
       ii.  Write to archive: obsidian_update_note({
              targetType: "filePath",
@@ -219,7 +302,7 @@ Move iteration notes older than 30 days to Archive/.
 
       Each step uses retry-then-queue. If any step fails, skip this file and continue.
 
-5. Log: "Archived {N} notes from {M} sessions older than 30 days"
+5. Log: "Archived {N} notes from {M} sessions (relevance-scored: {S}, fallback 30-day: {F})"
 ```
 
 ### Step 4: Generate Session ID
@@ -379,18 +462,44 @@ crashes: {crash count}
 
 Write to: `Projects/{ProjectName}/Iterations/{YYYY-MM-DD}/{session-id}-summary.md`
 
-### Step 2: Append Daily Note Mini-Summary
+### Step 2: Append Daily Note Mini-Summary (#25 Enhanced)
 
 ```
 obsidian_update_note({
   targetType: "periodicNote",
   targetIdentifier: "daily",
-  content: "\n\n---\n\n## AutoNexus Session ({HH:MM})\n\n**Project:** {ProjectName}\n**Goal:** {goal}\n**Result:** {baseline} -> {final} ({delta})\n**Iterations:** {total} ({keeps} keeps, {discards} discards)\n**Key win:** {best iteration description}\n**Key learning:** {most informative failed approach}\n[[Projects/{ProjectName}/Iterations/{YYYY-MM-DD}/{session-id}-summary|Full session details]]\n",
+  content: "
+
+---
+
+## AutoNexus Session ({HH:MM})
+
+**Project:** [[Projects/{ProjectName}/Dashboard|{ProjectName}]]
+**Goal:** {goal}
+**Result:** {baseline} → {final} ({delta})
+**Iterations:** {total} ({keeps} keeps, {discards} discards)
+
+**Key Wins:**
+- [[iter-link-1|{description}]] (+{delta})
+- [[iter-link-2|{description}]] (+{delta})
+
+**Key Learning:** {most informative failed approach}
+
+**Decisions Made:** {count} — [[decision-link|{title}]]
+
+[[Projects/{ProjectName}/Iterations/{date}/{session-id}-summary|Full session details]]
+",
   modificationType: "wholeFile",
   wholeFileMode: "append",
   createIfNeeded: true
 })
 ```
+
+The enhanced daily note adds:
+- Backlinks to individual kept iterations with their deltas
+- Link to the project Dashboard (MOC) instead of plain project name
+- Decision note links with count
+- Unicode arrow (→) for better readability
 
 ### Step 3: Final Queue Drain
 
@@ -695,6 +804,195 @@ discovered: {YYYY-MM-DD}
 ```
 
 Write to: `Cross-Project/{slug}.md`
+
+---
+
+## Dashboard Note (Map of Content) (#23)
+
+A Dashboard note is auto-generated/updated at `Projects/{ProjectName}/Dashboard.md` at session end. This serves as a Map of Content (MOC) for the project, aggregating key stats and links.
+
+### Dashboard Template
+
+```markdown
+---
+tags: [autonexus/dashboard, autonexus/{project}]
+updated_at: {ISO timestamp}
+---
+
+# {ProjectName} — AutoNexus Dashboard
+
+## Quick Stats
+- **Total Sessions:** {count from Iterations/}
+- **Total Iterations:** {sum from all sessions}
+- **Keep Rate:** {keeps / total}%
+- **Knowledge Center:** {fresh|stale} (updated {date})
+
+## Recent Sessions
+| Date | Goal | Baseline → Final | Iterations | Keeps |
+|------|------|-----------------|------------|-------|
+| [[session-link]] | {goal} | {b} → {f} ({delta}) | {n} | {k} |
+
+## Key Decisions
+{Links to 5 most recent Decision notes}
+
+## Unresolved Predict Findings
+{Links to predict findings with status != resolved}
+
+## Top Strategies
+{From strategy learning: which change types succeed most}
+
+## Knowledge Center
+- [[Knowledge/Architecture|Architecture]] — {freshness}
+- [[Knowledge/Components|Components]] — {freshness}
+- [[Knowledge/Dependencies|Dependencies]] — {freshness}
+```
+
+### Update Protocol
+
+The Dashboard note is written at session end, AFTER the session summary and daily note have been written:
+
+```
+obsidian_update_note({
+  targetType: "filePath",
+  targetIdentifier: "Projects/{ProjectName}/Dashboard.md",
+  content: "{rendered dashboard template}",
+  modificationType: "wholeFile",
+  wholeFileMode: "overwrite",
+  createIfNeeded: true
+})
+```
+
+To populate the dashboard:
+1. List all session summaries: `obsidian_list_notes({ dirPath: "Projects/{ProjectName}/Iterations/", recursionDepth: 2 })`
+2. Read frontmatter from recent summaries (up to 10) to extract stats
+3. List recent decisions: `obsidian_list_notes({ dirPath: "Projects/{ProjectName}/Decisions/", recursionDepth: 0 })`
+4. Check Knowledge Center freshness from Architecture.md frontmatter `commit_hash` and `updated_at`
+5. Search for unresolved predict findings: `obsidian_global_search({ query: "status: open", searchInPath: "Projects/{ProjectName}/Predictions/" })`
+
+Uses retry-then-queue protocol. If dashboard generation fails, it does not block session end.
+
+---
+
+## Bookmarks Integration (#24)
+
+AutoNexus uses Obsidian tags to mark notable notes for easy discovery. Users can filter by the `autonexus/bookmarked` tag in Obsidian's search or bookmarks plugin.
+
+### Bookmark Triggers
+
+Add the `autonexus/bookmarked` tag when any of these events occur:
+
+| Event | Condition | When Tagged |
+|-------|-----------|-------------|
+| Outstanding iteration | `delta > 2x average_delta` for the session | After iteration note is written (Phase 7) |
+| Decision created | Any Decision note is written | After Decision note write |
+| Critical predict finding | Finding with `severity: CRITICAL` | After persona note write |
+| Goal-achieving session | Session achieves the stated goal | After session summary write |
+
+### Implementation
+
+```
+obsidian_manage_tags({
+  filePath: "{path to the note}",
+  operation: "add",
+  tags: ["autonexus/bookmarked"]
+})
+```
+
+This call follows the retry-then-queue protocol. Bookmark tagging is best-effort — if it fails, the note content is still intact.
+
+### User Experience
+
+Users can leverage Obsidian's built-in features to work with bookmarked notes:
+- **Search:** `tag:autonexus/bookmarked` to find all notable items
+- **Bookmarks plugin:** Star notes with this tag for quick access
+- **Dataview queries:** Filter and sort bookmarked notes by date, project, or type
+
+---
+
+## Obsidian Canvas Generation (#20)
+
+AutoNexus generates `.canvas` files (JSON format that Obsidian Canvas understands) for visual representations of predict debates, session flows, and project overviews.
+
+### When Generated
+
+| Trigger | Canvas Type | Path |
+|---------|-------------|------|
+| After `/autonexus:predict` completes | Persona debate canvas | `Projects/{ProjectName}/Predictions/{date}-{slug}/debate.canvas` |
+| After `/autonexus:review` completes | Session flow canvas | `Projects/{ProjectName}/Iterations/{date}/{session-id}-flow.canvas` |
+| After `/autonexus:status` | Project overview canvas | `Projects/{ProjectName}/overview.canvas` |
+
+### Canvas JSON Format
+
+Obsidian Canvas files use a JSON format with `nodes` and `edges`:
+
+```json
+{
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "file",
+      "file": "Projects/MyApp/Predictions/2026-03-22/persona-security-analyst.md",
+      "x": 0, "y": 0, "width": 400, "height": 300
+    },
+    {
+      "id": "node-2",
+      "type": "text",
+      "text": "## Finding SA-1\n**JWT secret missing**\nSeverity: HIGH",
+      "x": 500, "y": 0, "width": 300, "height": 200
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "fromNode": "node-1",
+      "toNode": "node-2",
+      "label": "flagged"
+    }
+  ]
+}
+```
+
+### Predict Debate Canvas
+
+Visual representation of the multi-persona predict debate.
+
+- **Nodes:** Persona notes (type: `file`) + individual findings (type: `text`)
+- **Edges:** Challenges and agreements between personas, labeled with the interaction type
+- **Color coding:**
+  - Red = CRITICAL severity
+  - Orange = HIGH severity
+  - Yellow = MEDIUM severity
+  - Blue = LOW severity
+- **Layout:** Personas arranged in a circle, findings radiating outward from each persona
+
+### Session Flow Canvas
+
+Visual representation of an iteration session's progression.
+
+- **Nodes:** Iterations (type: `file` linking to iteration notes)
+  - Green background = keep
+  - Red background = discard
+  - Gray background = crash
+- **Edges:** Sequential flow between iterations (iteration N → iteration N+1)
+- **Decision nodes:** Highlighted with a border and larger size when a Decision note was created at that point
+- **Layout:** Left-to-right flow, with keeps on the top track and discards on the bottom track
+
+### Write Protocol
+
+Canvas files are written using `obsidian_update_note` with the `.canvas` extension:
+
+```
+obsidian_update_note({
+  targetType: "filePath",
+  targetIdentifier: "Projects/{ProjectName}/Predictions/{date}-{slug}/debate.canvas",
+  content: "{canvas JSON string}",
+  modificationType: "wholeFile",
+  wholeFileMode: "overwrite",
+  createIfNeeded: true
+})
+```
+
+Uses retry-then-queue protocol. Canvas generation is best-effort — if it fails, the underlying markdown notes still contain all the data.
 
 ---
 

@@ -57,6 +57,38 @@ After git checks pass, initialize Obsidian. Load `references/obsidian-integratio
    d. Create session folder marker in Obsidian
 ```
 
+### Predictive Budget Estimate (if OBSIDIAN_AVAILABLE)
+
+After establishing baseline, query Obsidian for past session data on this project:
+
+  obsidian_global_search({
+    query: "autonexus/session",
+    searchInPath: "Projects/{ProjectName}/Iterations/",
+    contextLength: 400,
+    pageSize: 20
+  })
+
+Parse session summaries to extract:
+  - Average improvement per kept iteration (delta / keeps)
+  - Average keep rate (keeps / total iterations)
+
+IF sufficient data (>=2 past sessions):
+  gap = abs(target_metric - baseline_metric)
+  avg_improvement = average delta per keep across past sessions
+  avg_keep_rate = average keeps / total across past sessions
+
+  estimated_iterations = ceil(gap / avg_improvement / avg_keep_rate)
+
+  Print: "Based on {N} past sessions:
+          Average improvement per keep: {avg_improvement}
+          Average keep rate: {avg_keep_rate}%
+          Gap to target: {gap}
+          Estimated iterations needed: ~{estimated_iterations}
+          Suggested: Iterations: {estimated_iterations + 30% buffer}"
+
+IF insufficient data:
+  Print: "Not enough past session data for prediction. Will improve after 2+ sessions."
+
 ## Phase 1: Review (30 seconds)
 
 Before each iteration, build situational awareness. **Complete ALL steps.**
@@ -158,6 +190,37 @@ Pick the NEXT change. **MUST consult git history, results log, AND Obsidian cont
 - If failed approach search returned results for target files → avoid those strategies, try fundamentally different angles
 - If predict persona warning found → factor severity into risk assessment, prefer conservative changes for HIGH/CRITICAL warnings
 - Mention in ideation reasoning: "Avoided X (previously discarded)" or "Heeded Security Analyst warning about Y"
+
+### Strategy Learning (Obsidian-Informed)
+
+Before choosing the next change, query Obsidian for strategy effectiveness in this project:
+
+IF OBSIDIAN_AVAILABLE:
+  obsidian_global_search({
+    query: "status: keep",
+    searchInPath: "Projects/{ProjectName}/Iterations/",
+    contextLength: 300,
+    pageSize: 50
+  })
+
+  Parse results to extract "Change:" descriptions from kept iterations.
+  Categorize changes by type: caching, refactoring, testing, error-handling,
+  performance, configuration, dependency, architecture.
+
+  Calculate keep rate per category:
+    strategy_profile = {
+      "caching": { keeps: 12, total: 15, rate: 80% },
+      "refactoring": { keeps: 3, total: 15, rate: 20% },
+      "testing": { keeps: 19, total: 20, rate: 95% }
+    }
+
+  Use strategy profile to BIAS ideation:
+  - Prefer categories with >60% keep rate
+  - Avoid categories with <30% keep rate (unless nothing else left)
+  - Mention in iteration note: "Strategy bias: favoring {category} (80% historical keep rate)"
+
+  IF fewer than 10 total iterations in Obsidian for this project:
+    Skip strategy learning — not enough data. Use standard priority order.
 
 **Anti-patterns:**
 - Don't repeat exact same change that was already discarded — CHECK git log AND Obsidian first
@@ -393,6 +456,81 @@ Applies to both modes:
 5. Try combining 2-3 previously successful changes
 6. Try the OPPOSITE of what hasn't been working
 7. Try a radical architectural change
+
+## Parallel Exploration Mode
+
+When stuck (>5 consecutive discards) AND the project has a clean git state, AutoNexus can fork into parallel exploration branches using git worktrees.
+
+### Trigger
+- Automatic: after >8 consecutive discards (escalation from "When Stuck" protocol)
+- Manual: user adds `Parallel: true` or `--parallel` flag
+
+### Protocol
+
+1. **Fork:** Create 2-3 git worktrees from current HEAD:
+   ```bash
+   git worktree add ../autonexus-branch-A -b autonexus/explore-A
+   git worktree add ../autonexus-branch-B -b autonexus/explore-B
+   git worktree add ../autonexus-branch-C -b autonexus/explore-C
+   ```
+
+2. **Assign strategies:** Each branch gets a DIFFERENT strategy:
+   - Branch A: Exploit best-performing category from strategy learning
+   - Branch B: Try the opposite approach (if caching failed, try architecture changes)
+   - Branch C: Radical experiment (combination of 2-3 past near-misses)
+
+3. **Execute:** Run 3-5 iterations per branch using the Agent tool with isolation: "worktree":
+   - Each subagent gets the same goal, scope, metric, verify, guard
+   - Each subagent runs independently for 3-5 iterations
+   - Each subagent writes to its own Obsidian session (different session-id)
+
+4. **Compare:** After all branches complete:
+   - Read the metric from each branch's final state
+   - Compare: which branch achieved the best metric?
+   - Print comparison table:
+     ```
+     === Parallel Exploration Results ===
+     Branch A (caching strategy):    metric = 87.3 (+2.1 from baseline)
+     Branch B (architecture change): metric = 89.1 (+3.9 from baseline) <- WINNER
+     Branch C (combined approach):   metric = 86.0 (+0.8 from baseline)
+     ```
+
+5. **Merge winner:**
+   ```bash
+   git merge autonexus/explore-B --no-ff -m "experiment(parallel): merge winning branch B — architecture changes"
+   ```
+
+6. **Cleanup:**
+   ```bash
+   git worktree remove ../autonexus-branch-A
+   git worktree remove ../autonexus-branch-B
+   git worktree remove ../autonexus-branch-C
+   git branch -d autonexus/explore-A autonexus/explore-B autonexus/explore-C
+   ```
+
+7. **Log:** Write to Obsidian a Decision note documenting the parallel exploration:
+   - Which strategies were tried
+   - Results per branch
+   - Why the winner was selected
+
+8. **Resume:** Continue the main loop from the merged state.
+
+### Constraints
+- Max 3 branches (more = diminishing returns)
+- Max 5 iterations per branch (enough to evaluate, not wasteful)
+- Only trigger when stuck — not for every session
+- Requires clean git state (no uncommitted changes)
+- Guard command must pass on all branches before comparison
+- If ALL branches fail to improve → log as "parallel exploration failed", resume normal loop with radical approach
+
+### Obsidian Logging
+Each parallel branch writes iteration notes to the SAME project in Obsidian but with branch-specific session IDs:
+- `{session-id}-A-iter-{N}.md`
+- `{session-id}-B-iter-{N}.md`
+- `{session-id}-C-iter-{N}.md`
+
+The comparison result gets a Decision note at:
+`Projects/{ProjectName}/Decisions/{date}-parallel-{slug}.md`
 
 ## Crash Recovery
 
