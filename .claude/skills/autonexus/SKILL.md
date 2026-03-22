@@ -23,10 +23,8 @@ IF obsidian MCP tools are NOT in your available tool set:
   SET OBSIDIAN_NOT_CONFIGURED = true
   WARN once: "Obsidian MCP is not configured. AutoNexus is running in local-only mode.
               The autonomous loop works fully without Obsidian — you get git + TSV tracking.
-              To enable persistent knowledge in Obsidian, see the Getting Started guide:
-              1. Install Obsidian + Local REST API plugin
-              2. Add obsidian-mcp-server to your .mcp.json
-              3. Restart Claude Code"
+              To enable persistent knowledge in Obsidian, run /autonexus:setup
+              (it will walk you through everything automatically)."
   SKIP all remaining Obsidian Phase 0 steps
   DO NOT attempt any Obsidian MCP calls for the entire session
 ```
@@ -63,6 +61,7 @@ For ALL commands:
 | `/autonexus:scenario` | Scenario, Domain | 4-8 adaptive questions per `references/scenario-workflow.md` |
 | `/autonexus:predict` | Scope, Goal, Depth | 3-4 batched questions per `references/predict-workflow.md` |
 | `/autonexus:learn` | Mode, Scope | 4 batched questions per `references/learn-workflow.md` |
+| `/autonexus:setup` | (none — self-guided wizard) | Walks user through Obsidian MCP config automatically |
 
 **YOU MUST NOT start any loop, phase, or execution without completing interactive setup when context is missing.**
 
@@ -79,6 +78,7 @@ For ALL commands:
 | `/autonexus:ship` | Universal shipping workflow: code, content, marketing, sales, research, design |
 | `/autonexus:scenario` | Scenario-driven use case generator: explore situations, edge cases, derivatives |
 | `/autonexus:learn` | Autonomous documentation engine: scout, learn, generate/update docs, validate |
+| `/autonexus:setup` | One-time setup wizard: configure Obsidian MCP (API key, platform detection, .mcp.json) |
 
 ## When to Activate
 
@@ -99,6 +99,8 @@ For ALL commands:
 - User says "ship it", "deploy this", "publish this", "launch this" → run the ship workflow
 - User says "explore scenarios", "generate use cases", "what could go wrong", "edge cases" → run the scenario loop
 - User says "learn this codebase", "generate docs", "document this project", "update docs" → run the learn workflow
+- User invokes `/autonexus:setup` → run the setup wizard
+- User says "setup obsidian", "configure obsidian", "connect obsidian", "setup autonexus" → run the setup wizard
 - User says "work autonomously", "iterate until done", "keep improving", "run overnight" → run the loop
 - Any task requiring repeated iteration cycles with measurable outcomes → run the loop
 

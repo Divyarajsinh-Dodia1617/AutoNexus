@@ -150,10 +150,8 @@ IF obsidian MCP tools are NOT in available tool set:
   SET OBSIDIAN_NOT_CONFIGURED = true
   WARN once: "Obsidian MCP is not configured. AutoNexus is running in local-only mode.
               The autonomous loop works fully without Obsidian — you get git + TSV tracking.
-              To enable persistent knowledge in Obsidian, see the Getting Started guide:
-              1. Install Obsidian + Local REST API plugin
-              2. Add obsidian-mcp-server to your .mcp.json
-              3. Restart Claude Code"
+              To enable persistent knowledge in Obsidian, run /autonexus:setup
+              (it will walk you through everything automatically)."
   SKIP Steps 2-5 entirely
   DO NOT attempt any Obsidian MCP calls for the entire session
   PROCEED directly to loop setup
