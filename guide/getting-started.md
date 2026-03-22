@@ -40,14 +40,14 @@ Restart Claude Code after adding the config.
 ### Option A: Plugin install
 
 ```
-/plugin marketplace add divya/autonexus
+/plugin marketplace add Divyarajsinh-Dodia1617/AutoNexus
 /plugin install autonexus@autonexus
 ```
 
 ### Option B: Manual copy
 
 ```bash
-git clone https://github.com/divya/autonexus.git
+git clone https://github.com/Divyarajsinh-Dodia1617/AutoNexus.git
 
 # Project-level
 cp -r autonexus/claude-plugin/skills/autonexus .claude/skills/autonexus

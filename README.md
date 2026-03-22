@@ -95,7 +95,7 @@ Add to your Claude Code MCP config (`.mcp.json`):
 ### 3. Install AutoNexus
 
 ```bash
-git clone https://github.com/divya/autonexus.git
+git clone https://github.com/Divyarajsinh-Dodia1617/AutoNexus.git
 
 # Copy to your project
 cp -r autonexus/claude-plugin/skills/autonexus .claude/skills/autonexus
