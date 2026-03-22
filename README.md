@@ -54,8 +54,12 @@ PRE-PUSH: Full knowledge center rebuild (~2-5 min)
 | `/autonexus` | Run the autonomous iteration loop with Obsidian integration |
 | `/autonexus:plan` | Interactive wizard: Goal → Scope, Metric, Verify config |
 | `/autonexus:predict` | Multi-persona swarm prediction with persona notes in Obsidian |
-
-**Phase 2 (coming soon):** debug, fix, security, ship, scenario, learn.
+| `/autonexus:debug` | Autonomous bug-hunting loop with scientific method |
+| `/autonexus:fix` | Autonomous error repair until zero errors remain |
+| `/autonexus:security` | STRIDE + OWASP Top 10 security audit with red-team personas |
+| `/autonexus:ship` | Universal shipping workflow (code, content, marketing, sales, research, design) |
+| `/autonexus:scenario` | Scenario-driven use case generator across 12 dimensions |
+| `/autonexus:learn` | Autonomous documentation engine with Obsidian Knowledge Center sync |
 
 ---
 
