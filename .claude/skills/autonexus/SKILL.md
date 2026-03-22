@@ -1,7 +1,7 @@
 ---
 name: autonexus
 description: Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone. Loops autonomously — modify, verify, keep/discard, repeat — with Obsidian reads/writes every iteration for persistent cross-session knowledge.
-version: 0.1.1
+version: 0.2.0
 ---
 
 # AutoNexus — Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone

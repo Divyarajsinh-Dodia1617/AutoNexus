@@ -1,7 +1,7 @@
 {
   "name": "autonexus",
-  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 10 commands: core loop, plan, predict, debug, fix, security, ship, scenario, learn, setup. Every iteration reads from and writes to Obsidian.",
-  "version": "0.1.1",
+  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 14 commands: core loop, plan, predict, debug, fix, security, ship, scenario, learn, setup, resume, status, review, agile, refine-backlog. Full Agile sprint lifecycle with 28+ autonomous agent roles. Every iteration reads from and writes to Obsidian.",
+  "version": "0.2.0",
   "author": {
     "name": "Divyarajsinh Dodia",
     "email": "divyarajsinh.dodia@outlook.com",
@@ -19,7 +19,10 @@
     "decision-records",
     "debugging",
     "security-audit",
-    "documentation"
+    "documentation",
+    "agile",
+    "sprint-management",
+    "agent-team"
   ],
   "commands": "./commands/",
   "skills": "./skills/"
