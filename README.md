@@ -1,14 +1,15 @@
 # AutoNexus
 
-**Autonomous goal-directed iteration engine with Obsidian as knowledge backbone.**
+**Autonomous goal-directed iteration engine with Obsidian as knowledge backbone — now with a full Agile agent team.**
 
-Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) and [Claude Autoresearch](https://github.com/uditgoenka/autoresearch). AutoNexus adds persistent cross-session knowledge via Obsidian MCP — every iteration reads from and writes to your Obsidian vault.
+Inspired by [Karpathy's autoresearch](https://github.com/karpathy/autoresearch) and [Claude Autoresearch](https://github.com/uditgoenka/autoresearch). AutoNexus adds persistent cross-session knowledge via Obsidian MCP — every iteration reads from and writes to your Obsidian vault. The new **Agile workflow** orchestrates 28+ specialized agents (CEO to Jr. Engineer) through full sprint lifecycles with quality gates, conflict resolution, and Agile ceremonies.
 
 [![Claude Code Skill](https://img.shields.io/badge/Claude_Code-Skill-blue?logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
-[![Version](https://img.shields.io/badge/version-0.1.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 *"Set the GOAL → Claude runs the LOOP → Knowledge persists in Obsidian → You wake up to results AND understanding."*
+*"Define the BACKLOG → Agents run the SPRINT → Design, build, review, test, ship — like a real MNC team."*
 
 ---
 
@@ -49,21 +50,83 @@ PRE-PUSH: Full knowledge center rebuild (~2-5 min)
 
 ## Commands
 
+### Core Loop
+
 | Command | What it does |
 |---------|--------------|
 | `/autonexus` | Run the autonomous iteration loop with Obsidian integration |
 | `/autonexus:plan` | Interactive wizard: Goal → Scope, Metric, Verify config |
+
+### Agile Team
+
+| Command | What it does |
+|---------|--------------|
+| `/autonexus:agile` | **Full Agile sprint lifecycle with autonomous agent team** — sprint planning, execution (10 stories), review, retrospective |
+| `/autonexus:refine-backlog` | **Interactive backlog grooming** — create, refine, reprioritize, split, or archive stories with PM + Architect agent assistance |
+
+### Analysis & Quality
+
+| Command | What it does |
+|---------|--------------|
 | `/autonexus:predict` | Multi-persona swarm prediction with persona notes in Obsidian |
 | `/autonexus:debug` | Autonomous bug-hunting loop with scientific method |
 | `/autonexus:fix` | Autonomous error repair until zero errors remain |
 | `/autonexus:security` | STRIDE + OWASP Top 10 security audit with red-team personas |
+
+### Workflows
+
+| Command | What it does |
+|---------|--------------|
 | `/autonexus:ship` | Universal shipping workflow (code, content, marketing, sales, research, design) |
 | `/autonexus:scenario` | Scenario-driven use case generator across 12 dimensions |
 | `/autonexus:learn` | Autonomous documentation engine with Obsidian Knowledge Center sync |
+
+### Session Management
+
+| Command | What it does |
+|---------|--------------|
 | `/autonexus:resume` | Resume a previous session — reload config from Obsidian, pick up where you left off |
 | `/autonexus:status` | Read-only project dashboard — session history, knowledge freshness, strategy profile |
 | `/autonexus:review` | Post-session analysis — pattern detection, lessons learned, session flow canvas |
 | `/autonexus:setup` | One-time Obsidian MCP setup wizard — API key, platform detection, .mcp.json config |
+
+---
+
+## Agent Team Hierarchy
+
+```
+CEO ─── CTO ─── Principal Engineer ─── Sr. Staff Engineer ─── Staff Engineer
+ │       │              │
+ │       │       Solutions Architect ─── Security Architect
+ │       │
+ │       ├── Engineering Manager
+ │       │       ├── Sr. Backend Engineer ── Backend Engineer ── Jr. Backend Engineer
+ │       │       ├── Sr. Frontend Engineer ── Frontend Engineer ── Jr. Frontend Engineer
+ │       │       ├── Sr. Full Stack Engineer ── Full Stack Engineer
+ │       │       ├── Sr. DevOps Engineer
+ │       │       └── Sr. SRE
+ │       │
+ │       └── Sr. Security Engineer ── Security Architect
+ │
+CPO ─── Product Manager
+ │       Technical Program Manager
+ │       Scrum Master (Orchestrator)
+ │
+ └────── UX Designer
+         UI Designer
+         QA Manager ── Sr. QA Engineer ── QA Engineer
+         Technical Writer
+         DBA
+```
+
+### Team Configurations
+
+| Config | Agents | Best For | Sprint Capacity |
+|--------|--------|----------|-----------------|
+| **Auto** | Scales per story | Mixed complexity | Dynamic |
+| **Lean** | 5 agents (PM, Architect, Sr. FS Eng, QA, EM) | Bug fixes, simple features | ~25 pts |
+| **Standard** | 12 agents + CTO review | Typical feature development | ~50 pts |
+| **Full** | 20+ agents + C-suite | Complex systems, new products | ~80 pts |
 
 ---
 
@@ -85,7 +148,7 @@ PRE-PUSH: Full knowledge center rebuild (~2-5 min)
 /reload-plugins
 ```
 
-That's it. All 13 commands are available immediately.
+That's it. All 15 commands are available immediately.
 
 **Updating:**
 ```
@@ -142,13 +205,41 @@ Metric: coverage % (higher is better)
 Verify: npm test -- --coverage | grep "All files"
 ```
 
-### 5. Check Obsidian
+### 5. Run an Agile Sprint
 
-After the session, your vault contains:
+```bash
+# Step 1: Build your backlog
+/autonexus:refine-backlog --new "User authentication with JWT"
+/autonexus:refine-backlog --new "User preferences API"
+/autonexus:refine-backlog --new "Settings dashboard"
+
+# Step 2: Run a sprint
+/autonexus:agile
+Sprint Goal: Core user management features
+Team: standard
+```
+
+The orchestrator will:
+1. Run **Sprint Planning** — PM selects stories, Architect assesses, team estimates, EM assigns
+2. For each of **10 stories**: Design → Implement → Review → QA → Accept
+3. Run **Sprint Review** — PM acceptance, CEO business assessment
+4. Run **Retrospective** — metrics, agent reflections, action items
+5. All artifacts persist in your Obsidian vault
+
+### 6. Check Obsidian
+
+After a session, your vault contains:
 - Per-iteration notes with rationale
 - Session summary with top wins and failed approaches
 - Daily note entry with session overview
 - Knowledge Center updated on push
+
+After a sprint, your vault also contains:
+- Sprint board with kanban state
+- Design docs, code reviews, QA logs per story
+- Sprint review + business assessment
+- Retrospective with metrics + action items
+- ADRs from any conflict resolutions
 
 ---
 
@@ -162,13 +253,32 @@ Projects/
     │   ├── Architecture.md
     │   ├── Components.md
     │   └── Dependencies.md
-    ├── Decisions/          ← ADR-format decision records
+    ├── Decisions/          ← ADR-format decision records + conflict resolutions
     ├── Iterations/         ← Per-iteration notes (5-8 lines each)
     │   ├── 2026-03-22/
     │   │   └── *.canvas    ← Session flow visualizations
     │   └── Archive/        ← Smart archival (relevance-scored)
-    └── Predictions/        ← Persona notes + debate transcripts
-        └── *.canvas        ← Persona debate visualizations
+    ├── Predictions/        ← Persona notes + debate transcripts
+    │   └── *.canvas        ← Persona debate visualizations
+    │
+    │   ── Agile Team ──────────────────────────────
+    │
+    ├── Backlog/            ← Product backlog (stories + epics)
+    │   ├── _index.md       ← Priority-ordered story list
+    │   ├── epics/          ← Epic definitions
+    │   └── stories/        ← Individual story lifecycle documents
+    ├── Sprints/            ← Sprint artifacts
+    │   └── sprint-{N}/
+    │       ├── Goal.md     ← Sprint goal + committed stories
+    │       ├── Board.md    ← Kanban board (updated in place)
+    │       ├── Standups/   ← Daily standup notes
+    │       ├── Review.md   ← Sprint review + business assessment
+    │       └── Retro.md    ← Retrospective + action items
+    ├── Designs/            ← Technical design docs per story
+    ├── Reviews/            ← Code review records per story
+    └── Team/               ← Team roster + working agreements
+        ├── Roster.md
+        └── Norms.md
 Cross-Project/              ← Patterns across all projects
 Daily Notes/                ← Enhanced session entries with backlinks
 ```
@@ -187,6 +297,47 @@ Daily Notes/                ← Enhanced session entries with backlinks
 
 ---
 
+## v0.2.0 Features — Agile Agent Team
+
+### Autonomous Agent Team
+- **28+ specialized agents** — CEO, CTO, CPO, Engineering Manager, Product Manager, Scrum Master, Architects, Sr./Mid/Jr. Engineers (Backend, Frontend, Full Stack), QA Manager, QA Engineers, DevOps, SRE, Security Engineer, UX/UI Designers, Technical Writer, DBA
+- **Isolated context windows** — Every agent runs as a subagent with its own context. The orchestrator stays clean — it never reads source code or writes implementation
+- **Flexible team sizing** — Auto (scales per story), Lean (5 agents), Standard (12), Full (20+)
+- **Model-per-seniority** — Opus for C-suite/Principal, Sonnet for everyone else
+
+### Full Agile Ceremonies
+- **Sprint Planning** — PM prioritizes backlog, Architect assesses feasibility, Planning Poker with 3 parallel estimators, EM assigns, CTO strategic review
+- **Daily Standups** — Scrum Master compiles status, burn metrics, blocker identification
+- **Sprint Review** — PM acceptance verification, CEO business value assessment
+- **Retrospective** — Metrics compilation, parallel agent reflections, EM action items
+- **Backlog Refinement** — Interactive grooming via `/autonexus:refine-backlog`
+
+### Quality Gates
+- **Design Gate** — Architect design + CTO approval before implementation
+- **Code Gate** — Sr. Engineer review + Security pass before QA
+- **QA Gate** — All tests pass + coverage target met before acceptance
+- **Acceptance Gate** — PM verifies all acceptance criteria before Done
+- **No bypass** — Gates escalate to supervisors on repeated failure
+
+### Conflict Resolution
+- Automatic escalation to the appropriate supervisor in the chain
+- Jr. → Sr. → Staff → Principal → CTO → CEO
+- Decisions recorded as binding ADRs in Obsidian
+
+### Sprint Execution
+- **10 testable stories per sprint** — Each story has acceptance criteria, verify_command, test_file
+- **Per-story lifecycle** — Design → Implement → Code Review → QA → Accept
+- **Engineer agents run mini autoresearch loops** — Iterate until acceptance tests pass (max 20 iterations)
+- **Resumable** — Sprint board in Obsidian is the checkpoint. `--resume` picks up where you left off
+
+### Obsidian as Communication Channel
+- Agents communicate **only through Obsidian notes** — never see each other's context
+- Story notes are lifecycle documents — every agent appends to the same note
+- Sprint board updated in place throughout execution
+- All decisions, reviews, and test results persist as searchable Obsidian notes
+
+---
+
 ## v0.1.1 Features
 
 ### Loop Intelligence
@@ -194,7 +345,7 @@ Daily Notes/                ← Enhanced session entries with backlinks
 - **Predictive Budgeting** — Estimates iterations needed to reach your goal based on past session data (requires 2+ past sessions).
 - **Parallel Branches** — When stuck (>8 consecutive discards), forks into 2-3 git worktrees, tries different strategies in parallel, merges the winner.
 
-### New Commands
+### Commands
 - **`/autonexus:resume`** — Resume any previous session from Obsidian. Reloads goal, scope, metric, verify. No re-setup needed.
 - **`/autonexus:status`** — Read-only project dashboard. Shows session history, knowledge freshness, keep rate, top strategies, unresolved findings.
 - **`/autonexus:review`** — Post-session analysis. Identifies patterns, generates lessons learned notes, optionally writes cross-project insights.
@@ -222,6 +373,24 @@ A: It takes 2-5 minutes. It runs when you say "push" — Claude scans the codeba
 
 **Q: Can I use this without Obsidian?**
 A: Yes — it degrades gracefully to a standard autoresearch-style loop with git + TSV. You just lose the persistent knowledge layer.
+
+**Q: How many agent spawns does a sprint take?**
+A: ~112 for a clean sprint (10 stories), ~125 with rework. Each spawn is focused with an isolated context — the orchestrator stays lightweight.
+
+**Q: Do agents actually write code?**
+A: Yes. Engineer agents read the design from Obsidian, read the codebase, then run a mini autoresearch loop — iterating until all acceptance tests pass. They commit real code to git.
+
+**Q: How do agents communicate?**
+A: Only through Obsidian notes. Agent A writes to a story note → Agent B reads from that same note. They never see each other's context window. The story note is the communication hub.
+
+**Q: Can I resume an interrupted sprint?**
+A: Yes — `--resume` reads the sprint board from Obsidian and picks up from the last completed step. All state lives in Obsidian, not in memory.
+
+**Q: What happens when agents disagree?**
+A: The orchestrator detects the conflict and automatically spawns the appropriate supervisor (e.g., Staff Engineer for Sr. vs Sr. disputes). The supervisor's decision becomes a binding ADR.
+
+**Q: Can I run just the planning ceremony?**
+A: Yes — `--phase planning` runs only sprint planning. Same for `--phase review` and `--phase retro`.
 
 ---
 
