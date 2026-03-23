@@ -80,6 +80,77 @@ Defines all available agents, their categories, and team configurations. The orc
 | tech-writer | Technical Writer | sonnet | agents/specialized/technical-writer.md |
 | dba | DBA | sonnet | agents/specialized/dba.md |
 
+### Swarm Intelligence (Tier 2-7) — Multi-Agent Coordination
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| strategic-queen | Strategic Queen | opus | agents/swarm/strategic-queen.md |
+| tactical-queen | Tactical Queen | sonnet | agents/swarm/tactical-queen.md |
+| adaptive-queen | Adaptive Queen | sonnet | agents/swarm/adaptive-queen.md |
+| scout-explorer | Scout Explorer | sonnet | agents/swarm/scout-explorer.md |
+| swarm-memory-mgr | Swarm Memory Manager | sonnet | agents/swarm/swarm-memory-manager.md |
+| collective-intel | Collective Intelligence Coordinator | sonnet | agents/swarm/collective-intelligence.md |
+
+### Consensus (Tier 6) — Decision Algorithms
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| raft-manager | Raft Consensus Manager | sonnet | agents/consensus/raft-manager.md |
+| bft-coordinator | Byzantine Fault Tolerance Coordinator | sonnet | agents/consensus/byzantine-coordinator.md |
+
+### SPARC Methodology (Tier 5-6) — Structured Development
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| sparc-spec | SPARC Specification Agent | sonnet | agents/sparc/specification-agent.md |
+| sparc-pseudo | SPARC Pseudocode Agent | sonnet | agents/sparc/pseudocode-agent.md |
+| sparc-arch | SPARC Architecture Agent | opus | agents/sparc/architecture-agent.md |
+| sparc-refine | SPARC Refinement Agent | sonnet | agents/sparc/refinement-agent.md |
+| sparc-complete | SPARC Completion Agent | sonnet | agents/sparc/completion-agent.md |
+
+### GitHub Operations (Tier 5-8) — Repository Management
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| pr-manager | PR Manager | sonnet | agents/github/pr-manager.md |
+| issue-tracker | Issue Tracker | sonnet | agents/github/issue-tracker.md |
+| release-mgr | Release Manager | sonnet | agents/github/release-manager.md |
+| code-review-swarm | Code Review Swarm | sonnet | agents/github/code-review-swarm.md |
+| multi-repo-coord | Multi-Repo Coordinator | sonnet | agents/github/multi-repo-coordinator.md |
+
+### Learning & Reasoning (Tier 5-7) — Self-Improvement
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| reasoning-bank-mgr | ReasoningBank Manager | sonnet | agents/learning/reasoning-bank-manager.md |
+| pattern-distiller | Pattern Distiller | sonnet | agents/learning/pattern-distiller.md |
+| meta-learner | Meta-Learning Analyst | opus | agents/learning/meta-learning-agent.md |
+
+### Governance (Tier 3-5) — Policy & Compliance
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| governance-ctrl | Governance Controller | sonnet | agents/governance/governance-controller.md |
+| claims-mgr | Claims Manager | sonnet | agents/governance/claims-manager.md |
+| compliance-auditor | Compliance Auditor | sonnet | agents/governance/compliance-auditor.md |
+
+### Optimization (Tier 6-8) — Performance & Cost
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| topology-optimizer | Topology Optimizer | sonnet | agents/optimization/topology-optimizer.md |
+| perf-monitor | Performance Monitor | haiku | agents/optimization/performance-monitor.md |
+| resource-allocator | Resource Allocator | sonnet | agents/optimization/resource-allocator.md |
+| benchmark-runner | Benchmark Runner | haiku | agents/optimization/benchmark-runner.md |
+
+### Security (Enhanced) (Tier 6-7) — Advanced Security
+
+| ID | Name | Model | Definition |
+|----|------|-------|------------|
+| security-analyst | Security Analyst | sonnet | agents/security/security-analyst.md |
+| cve-remediation | CVE Remediation Specialist | sonnet | agents/security/cve-remediation.md |
+| ai-defense | AI Defense Specialist | opus | agents/security/ai-defense.md |
+
 ## Team Configurations
 
 ### Auto (default)
@@ -139,6 +210,50 @@ All Standard Team agents, plus:
 
 Sprint capacity: ~80 story points
 
+### Swarm Team (8-15 agents)
+
+Best for: Complex multi-domain tasks requiring parallel exploration
+
+| Role | Agent |
+|------|-------|
+| Strategic Coordination | strategic-queen |
+| Tactical Coordination | tactical-queen |
+| Adaptive Optimization | adaptive-queen |
+| Reconnaissance | scout-explorer (×2) |
+| Knowledge Management | swarm-memory-mgr |
+| Consensus | collective-intel, raft-manager |
+| Builders | sr-backend-eng, sr-frontend-eng, fullstack-eng |
+| Quality | sr-qa-eng, qa-eng |
+| Security | sr-security-eng |
+
+Swarm capacity: Task-dependent (queen decomposes into subtasks)
+
+### SPARC Team (7-12 agents)
+
+Best for: Feature development following structured SPARC methodology
+
+| Role | Agent |
+|------|-------|
+| Specification | sparc-spec, pm |
+| Pseudocode | sparc-pseudo |
+| Architecture | sparc-arch, architect |
+| Refinement | sparc-refine, sr-backend-eng, sr-frontend-eng |
+| Completion | sparc-complete, sr-qa-eng, tech-writer |
+| Oversight | cto |
+
+SPARC capacity: 1 feature at a time, phased execution
+
+### Governance Team (5 agents)
+
+Best for: Policy enforcement, compliance audits, security governance
+
+| Role | Agent |
+|------|-------|
+| Control Plane | governance-ctrl |
+| Permissions | claims-mgr |
+| Compliance | compliance-auditor |
+| Security Review | security-architect, ai-defense |
+
 ## Escalation Chain
 
 | Tier | Agent | Escalates To |
@@ -158,6 +273,26 @@ Sprint capacity: ~80 story points
 | EM | em | cto |
 | PM | pm | cpo |
 | CTO vs CPO | cto, cpo | ceo |
+| Swarm Worker | scout-explorer, builders | tactical-queen |
+| Tactical Queen | tactical-queen | strategic-queen |
+| Strategic Queen | strategic-queen | cto |
+| Adaptive Queen | adaptive-queen | strategic-queen |
+| Consensus | raft-manager, bft-coordinator | collective-intel |
+| Collective Intel | collective-intel | strategic-queen |
+| SPARC Agents | sparc-spec, sparc-pseudo, sparc-refine, sparc-complete | sparc-arch |
+| SPARC Architect | sparc-arch | cto |
+| GitHub Agents | pr-manager, issue-tracker, release-mgr | em |
+| Code Review Swarm | code-review-swarm | principal-eng |
+| Multi-Repo | multi-repo-coord | cto |
+| Learning | pattern-distiller | reasoning-bank-mgr |
+| ReasoningBank | reasoning-bank-mgr | principal-eng |
+| Meta-Learner | meta-learner | cto |
+| Governance | claims-mgr, compliance-auditor | governance-ctrl |
+| Governance Ctrl | governance-ctrl | cto |
+| Security (Advanced) | security-analyst, cve-remediation | security-architect |
+| AI Defense | ai-defense | security-architect |
+| Optimization | perf-monitor, benchmark-runner | resource-allocator |
+| Topology Optimizer | topology-optimizer | adaptive-queen |
 
 ## Model Assignment
 
@@ -169,3 +304,9 @@ All agents use Sonnet by default. Exceptions:
 | CTO | opus | Technical strategy, architecture review |
 | CPO | opus | Product strategy, user experience vision |
 | Principal Engineer | opus | Org-wide technical decisions, complex problem solving |
+| Strategic Queen | opus | Complex goal decomposition, multi-domain coordination |
+| SPARC Architecture Agent | opus | System design, interface definitions |
+| Meta-Learning Analyst | opus | Meta-analysis of learning effectiveness |
+| AI Defense Specialist | opus | AI safety, prompt injection defense |
+| Performance Monitor | haiku | Lightweight background monitoring |
+| Benchmark Runner | haiku | Fast metric collection |

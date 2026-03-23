@@ -50,6 +50,16 @@ Hook Evaluation (integrated into other workflows)
 | `gate-failed` | Quality gate fails in agile | `$GATE_NAME`, `$STORY_ID`, `$SPRINT`, `$FAILURE_COUNT` |
 | `sprint-end` | Sprint completes | `$SPRINT`, `$STORIES_COMPLETED`, `$STORIES_TOTAL`, `$VELOCITY` |
 | `pipeline-step-failed` | A chain pipeline step fails | `$PIPELINE`, `$STEP`, `$COMMAND`, `$ERROR` |
+| `swarm-activated` | Swarm mode activated for a task | `$TOPOLOGY`, `$QUEEN_TYPE`, `$WORKER_COUNT`, `$SESSION` |
+| `swarm-consensus-reached` | Swarm consensus algorithm completes | `$ALGORITHM`, `$RESULT`, `$AGREEMENT_LEVEL`, `$SESSION` |
+| `swarm-drift-detected` | Anti-drift check detects misalignment | `$DRIFT_TYPE`, `$SEVERITY`, `$SESSION` |
+| `swarm-complete` | Swarm execution finishes | `$TOPOLOGY`, `$WORKERS_USED`, `$RESULT`, `$SESSION` |
+| `pattern-learned` | ReasoningBank stores new pattern | `$PATTERN_NAME`, `$CONFIDENCE`, `$CATEGORY`, `$SESSION` |
+| `meta-learning-complete` | Meta-learning analysis finishes | `$PATTERNS_ANALYZED`, `$RECOMMENDATIONS`, `$SESSION` |
+| `policy-violation` | Governance policy violated | `$AGENT`, `$POLICY`, `$ACTION`, `$SEVERITY` |
+| `claim-violation` | Agent exceeds its claims | `$AGENT`, `$CLAIM_TYPE`, `$ATTEMPTED_ACTION` |
+| `sparc-phase-complete` | SPARC phase finishes | `$PHASE`, `$FEATURE`, `$STATUS`, `$SESSION` |
+| `cost-threshold` | Token budget reaches warning level | `$SPENT`, `$BUDGET`, `$PERCENTAGE` |
 
 ---
 
@@ -156,7 +166,7 @@ count >= 3 AND keep_rate < 30
 
 ## Built-in Hook Templates
 
-### auto-debug-on-crashes
+### 1. auto-debug-on-crashes
 
 ```yaml
 Event: consecutive-crashes
@@ -169,7 +179,7 @@ Priority: 10
 
 **Use when:** The iteration loop hits repeated crashes — likely a systemic issue that needs investigation.
 
-### backlog-from-findings
+### 2. backlog-from-findings
 
 ```yaml
 Event: finding-created
@@ -184,7 +194,7 @@ Priority: 30
 
 **Use when:** Security or debug findings should automatically become actionable backlog items.
 
-### pause-on-low-keep-rate
+### 3. pause-on-low-keep-rate
 
 ```yaml
 Event: keep-rate-drop
@@ -196,7 +206,7 @@ Priority: 20
 
 **Use when:** The loop is spinning without progress — human intervention needed.
 
-### celebrate-goal
+### 4. celebrate-goal
 
 ```yaml
 Event: goal-achieved
@@ -208,7 +218,7 @@ Priority: 50
 
 **Use when:** Positive reinforcement — know immediately when the goal is hit.
 
-### auto-fix-on-guard-fail
+### 5. auto-fix-on-guard-fail
 
 ```yaml
 Event: iteration-complete
@@ -221,7 +231,7 @@ Priority: 40
 
 **Use when:** Guard failures suggest regressions that the fix loop can handle.
 
-### auto-review-on-session-end
+### 6. auto-review-on-session-end
 
 ```yaml
 Event: session-end
@@ -234,7 +244,7 @@ Priority: 60
 
 **Use when:** Automatically analyze productive sessions.
 
-### escalate-gate-failures
+### 7. escalate-gate-failures
 
 ```yaml
 Event: gate-failed
@@ -245,6 +255,57 @@ Priority: 15
 ```
 
 **Use when:** Quality gates are repeatedly failing — may need architectural rethink.
+
+### 8. auto-swarm-on-stuck
+
+```yaml
+Event: consecutive-discards
+Condition: count >= 8
+Action: run-command
+Command: /autonexus:swarm --topology hierarchical --scope $SCOPE
+Message: "$COUNT consecutive discards in solo mode. Activating swarm for parallel exploration."
+Priority: 12
+```
+
+**Use when:** Solo agent is stuck after 8+ consecutive discards — swarm intelligence may find alternatives through parallel exploration.
+
+### 9. learn-on-keep
+
+```yaml
+Event: iteration-complete
+Condition: status == "keep"
+Action: run-command
+Command: /autonexus:reason --distill --session $SESSION --iteration $ITERATION
+Message: "Kept iteration $ITERATION. Distilling pattern to ReasoningBank."
+Priority: 70
+```
+
+**Use when:** Every successful iteration should feed back into the learning system for future pattern retrieval.
+
+### 10. governance-alert-on-violation
+
+```yaml
+Event: policy-violation
+Condition: severity == "BLOCK"
+Action: pause
+Message: "BLOCK-severity policy violation by $AGENT: $POLICY.\nAction attempted: $ACTION.\n\nThis requires immediate review before the workflow can continue."
+Priority: 5
+```
+
+**Use when:** A governance policy with BLOCK severity is violated — the system must pause for human review before proceeding.
+
+### 11. auto-optimize-routing
+
+```yaml
+Event: meta-learning-complete
+Condition: always
+Action: run-command
+Command: /autonexus:optimize --apply-recommendations
+Message: "Meta-learning complete. Analyzed $PATTERNS_ANALYZED patterns. Applying routing optimizations: $RECOMMENDATIONS"
+Priority: 65
+```
+
+**Use when:** After meta-learning analysis completes, automatically adjust three-tier routing thresholds based on learned patterns.
 
 ---
 
@@ -258,7 +319,7 @@ Use `AskUserQuestion` with batched questions:
 
 | # | Header | Question | Options |
 |---|--------|----------|---------|
-| 1 | `Event` | "What event should trigger this hook?" | "Iteration complete", "Consecutive discards", "Consecutive crashes", "Keep rate drops", "Metric threshold", "Goal achieved", "Session end", "Finding created", "Story complete", "Gate failed", "Sprint end", "Pipeline step failed" |
+| 1 | `Event` | "What event should trigger this hook?" | "Iteration complete", "Consecutive discards", "Consecutive crashes", "Keep rate drops", "Metric threshold", "Goal achieved", "Session end", "Finding created", "Story complete", "Gate failed", "Sprint end", "Pipeline step failed", "Swarm activated", "Swarm consensus reached", "Swarm drift detected", "Swarm complete", "Pattern learned", "Meta-learning complete", "Policy violation", "Claim violation", "SPARC phase complete", "Cost threshold" |
 | 2 | `Condition` | "What condition must be met?" | Context-dependent options based on Event selection + "Custom condition" |
 | 3 | `Action` | "What should happen when triggered?" | "Run an autonexus command", "Create Obsidian note", "Create backlog story", "Alert me (print message)", "Pause the loop", "Tag a note" |
 
@@ -675,6 +736,102 @@ fire_event("pipeline-step-failed", {
   step: step_number,
   command: step.command,
   error: error_message
+})
+```
+
+### In /autonexus:swarm
+
+```
+# When swarm is activated:
+fire_event("swarm-activated", {
+  topology: topology_type,
+  queen_type: queen_agent_id,
+  worker_count: num_workers,
+  session: session_id
+})
+
+# When consensus is reached:
+fire_event("swarm-consensus-reached", {
+  algorithm: consensus_algorithm,
+  result: consensus_result,
+  agreement_level: agreement_percentage,
+  session: session_id
+})
+
+# When drift is detected:
+fire_event("swarm-drift-detected", {
+  drift_type: drift_type,
+  severity: drift_severity,
+  session: session_id
+})
+
+# When swarm completes:
+fire_event("swarm-complete", {
+  topology: topology_type,
+  workers_used: total_workers,
+  result: final_result,
+  session: session_id
+})
+```
+
+### In /autonexus:reason
+
+```
+# When a new pattern is learned:
+fire_event("pattern-learned", {
+  pattern_name: pattern.name,
+  confidence: pattern.confidence,
+  category: pattern.category,
+  session: session_id
+})
+
+# When meta-learning completes:
+fire_event("meta-learning-complete", {
+  patterns_analyzed: count,
+  recommendations: recommendation_summary,
+  session: session_id
+})
+```
+
+### In /autonexus:govern
+
+```
+# When a policy is violated:
+fire_event("policy-violation", {
+  agent: agent_id,
+  policy: policy_name,
+  action: attempted_action,
+  severity: violation_severity
+})
+
+# When claims are exceeded:
+fire_event("claim-violation", {
+  agent: agent_id,
+  claim_type: claim_type,
+  attempted_action: action_description
+})
+```
+
+### In /autonexus:sparc
+
+```
+# After each SPARC phase completes:
+fire_event("sparc-phase-complete", {
+  phase: phase_name,
+  feature: feature_name,
+  status: phase_status,
+  session: session_id
+})
+```
+
+### In /autonexus:optimize
+
+```
+# When cost threshold is reached:
+fire_event("cost-threshold", {
+  spent: tokens_spent,
+  budget: token_budget,
+  percentage: spent_percentage
 })
 ```
 

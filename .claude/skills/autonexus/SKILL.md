@@ -1,7 +1,7 @@
 ---
 name: autonexus
 description: Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone. Loops autonomously — modify, verify, keep/discard, repeat — with Obsidian reads/writes every iteration for persistent cross-session knowledge.
-version: 0.3.0
+version: 0.4.0
 ---
 
 # AutoNexus — Autonomous Goal-directed Iteration with Obsidian Knowledge Backbone
@@ -70,6 +70,14 @@ For ALL commands:
 | `/autonexus:chain` | Steps or Pipeline name | 3 batched questions per `references/chain-workflow.md` |
 | `/autonexus:canvas` | Canvas Type | 2 batched questions per `references/canvas-workflow.md` |
 | `/autonexus:hook` | (none for --list; varies for --add) | 3+2 batched questions per `references/hook-workflow.md` |
+| `/autonexus:sparc` | Feature/Goal, Scope | 3 batched questions per `references/sparc-methodology.md` |
+| `/autonexus:swarm` | Task, Scope, Topology | 4 batched questions per `references/swarm-intelligence.md` |
+| `/autonexus:reason` | (none for --stats; varies for --search) | Context-dependent per `references/reasoning-bank.md` |
+| `/autonexus:govern` | (none for --list; varies for --add) | 3 batched questions per `references/governance-control.md` |
+| `/autonexus:auto-agent` | Task, Scope | 2 batched questions per `references/three-tier-routing.md` |
+| `/autonexus:optimize` | (none — read-only) | No setup needed — queries Obsidian optimization data |
+| `/autonexus:stream` | Agent chain or Pipeline name | 2 batched questions per `references/stream-chaining.md` |
+| `/autonexus:mle-star` | ML Goal, Dataset, Metric | 4 batched questions per `references/reasoning-bank.md` |
 
 **YOU MUST NOT start any loop, phase, or execution without completing interactive setup when context is missing.**
 
@@ -95,6 +103,14 @@ For ALL commands:
 | `/autonexus:chain` | Workflow composition — chain multiple commands into a pipeline |
 | `/autonexus:canvas` | On-demand Obsidian Canvas generation (architecture, sprint, dependency, etc.) |
 | `/autonexus:hook` | Event-driven triggers — define rules that fire actions on events |
+| `/autonexus:sparc` | SPARC 5-phase development: Specification → Pseudocode → Architecture → Refinement → Completion |
+| `/autonexus:swarm` | Swarm intelligence: multi-agent coordination with queen hierarchy and consensus |
+| `/autonexus:reason` | ReasoningBank: view, search, prune learned patterns from self-learning system |
+| `/autonexus:govern` | Governance control plane: policies, audit trail, agent permissions |
+| `/autonexus:auto-agent` | Auto-scaling agent spawning based on task complexity assessment |
+| `/autonexus:optimize` | Token optimization dashboard: cost tracking, routing efficiency, recommendations |
+| `/autonexus:stream` | Stream chaining: agent-to-agent output piping without intermediate storage |
+| `/autonexus:mle-star` | ML Engineering workflow: Search, Train, Ablate, Refine structured experiment lifecycle |
 
 ## When to Activate
 
@@ -133,6 +149,22 @@ For ALL commands:
 - User says "chain commands", "run a pipeline", "compose workflows", "run predict then agile" → run the chain workflow
 - User says "generate a canvas", "visualize architecture", "draw a diagram", "dependency graph", "sprint board canvas", "knowledge map" → run the canvas workflow
 - User says "add a hook", "create a trigger", "list hooks", "when crashes happen", "auto-fix on errors" → run the hook workflow
+- User invokes `/autonexus:sparc` → run the SPARC workflow
+- User invokes `/autonexus:swarm` → run the swarm workflow
+- User invokes `/autonexus:reason` → run the reasoning bank manager
+- User invokes `/autonexus:govern` → run the governance control plane
+- User invokes `/autonexus:auto-agent` → run auto-scaling agent spawning
+- User invokes `/autonexus:optimize` → run the optimization dashboard
+- User invokes `/autonexus:stream` → run stream chaining
+- User invokes `/autonexus:mle-star` → run ML engineering workflow
+- User says "SPARC", "specification to completion", "5-phase development", "build this feature step by step" → run SPARC
+- User says "swarm", "multi-agent", "queen coordination", "parallel agents" → run swarm
+- User says "reasoning bank", "what patterns", "learned patterns", "self-learning" → run reasoning bank
+- User says "governance", "policies", "permissions", "audit trail", "compliance" → run governance
+- User says "auto-scale", "how many agents", "auto-assign agents" → run auto-agent
+- User says "token usage", "cost optimization", "routing efficiency" → run optimize
+- User says "stream agents", "pipe output", "chain agents directly" → run stream
+- User says "ML experiment", "train model", "ablation study", "machine learning workflow" → run MLE-STAR
 - User says "work autonomously", "iterate until done", "keep improving", "run overnight" → run the loop
 - Any task requiring repeated iteration cycles with measurable outcomes → run the loop
 
@@ -240,7 +272,7 @@ SESSION END:
 
 ## Principles Reference
 
-See `references/core-principles.md` for the 9 principles (7 from autoresearch + 2 AutoNexus additions).
+See `references/core-principles.md` for the 14 principles (7 from autoresearch + 2 AutoNexus additions + 5 ruflo-inspired additions).
 
 ## Adapting to Different Domains
 

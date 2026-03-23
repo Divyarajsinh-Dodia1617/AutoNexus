@@ -22,6 +22,14 @@ Comprehensive documentation for every AutoNexus command.
 | [/autonexus:chain](autonexus-chain.md) | Workflow composition — chain commands into pipelines |
 | [/autonexus:canvas](autonexus-canvas.md) | On-demand Obsidian Canvas generation |
 | [/autonexus:hook](autonexus-hook.md) | Event-driven triggers for automated reactions |
+| [/autonexus:sparc](autonexus-sparc.md) | SPARC 5-phase structured development |
+| [/autonexus:swarm](autonexus-swarm.md) | Multi-agent swarm intelligence |
+| [/autonexus:reason](autonexus-reason.md) | ReasoningBank self-learning management |
+| [/autonexus:govern](autonexus-govern.md) | Governance control plane & permissions |
+| [/autonexus:auto-agent](autonexus-auto-agent.md) | Intelligent auto-scaling agent spawning |
+| [/autonexus:optimize](autonexus-optimize.md) | Token optimization dashboard |
+| [/autonexus:stream](autonexus-stream.md) | Fast agent-to-agent stream chaining |
+| [/autonexus:mle-star](autonexus-mle-star.md) | ML Engineering experiment lifecycle |
 
 ## Quick Decision Guide
 
@@ -47,3 +55,11 @@ Comprehensive documentation for every AutoNexus command.
 | Predict then debug | `/autonexus:predict --chain debug` |
 | Debug then auto-fix | `/autonexus:debug --fix` |
 | Full pipeline | `/autonexus:chain --template full-sprint` |
+| Deploy a multi-agent swarm | `/autonexus:swarm` |
+| Build a feature step-by-step | `/autonexus:sparc` |
+| See what patterns the system learned | `/autonexus:reason --stats` |
+| Set safety guardrails for agents | `/autonexus:govern --template secret-protection` |
+| Auto-pick the right team size | `/autonexus:auto-agent` |
+| Check token spending | `/autonexus:optimize` |
+| Fast agent-to-agent piping | `/autonexus:stream --pipeline analysis` |
+| Run an ML experiment | `/autonexus:mle-star` |

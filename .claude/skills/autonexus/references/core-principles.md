@@ -1,7 +1,7 @@
 # Core Principles — AutoNexus
 
-9 universal principles for autonomous goal-directed iteration with persistent knowledge.
-Principles 1-7 adapted from Karpathy's autoresearch. Principles 8-9 are AutoNexus additions.
+14 universal principles for autonomous goal-directed iteration with persistent knowledge.
+Principles 1-7 adapted from Karpathy's autoresearch. Principles 8-9 are AutoNexus additions. Principles 10-14 are ruflo-inspired additions.
 
 ## 1. Constraint = Enabler
 
@@ -177,8 +177,66 @@ Git captures WHAT changed. Obsidian captures WHY it changed, what alternatives w
 
 **Apply:** Every Obsidian MCP call uses the retry-then-queue protocol. Failed writes queue locally and drain later. The loop never blocks, never crashes, never pauses for Obsidian.
 
+## 10. Swarm Intelligence Over Solo Execution
+
+**Ruflo-inspired addition.** When tasks exceed single-agent capacity, coordinate multiple agents through structured swarm topologies rather than sequential handoffs.
+
+| Solo Agent | Swarm |
+|------------|-------|
+| One context window, one perspective | Multiple perspectives, parallel exploration |
+| Sequential bottleneck | Parallel execution with consensus |
+| Single point of failure | Fault tolerance through redundancy |
+
+**Apply:** For tasks spanning >3 domains or >10 files, activate swarm mode with queen coordination. Use hierarchical topology for coding, mesh for research.
+
+## 11. Least Privilege by Default
+
+**Ruflo-inspired addition.** Every agent operates with the minimum permissions needed for its task. Claims auto-revoke on completion.
+
+- Junior agents get minimal scope (their assigned files only)
+- Senior agents get standard scope (project-wide read, in-scope write)
+- Executive agents get elevated scope (time-limited)
+- No agent gets admin by default
+
+**Apply:** At agent spawn, assign claims based on tier and task. Monitor for violations. Revoke on completion.
+
+## 12. Route to the Cheapest Capable Handler
+
+**Ruflo-inspired addition.** Not every task needs an opus-tier agent. Route deterministic transforms to direct edits, simple tasks to haiku/sonnet, and reserve opus for genuine complexity.
+
+| Task Complexity | Handler | Cost |
+|----------------|---------|------|
+| Deterministic (rename, format) | Direct Edit tool | $0 |
+| Simple (single-file, well-understood) | Haiku/Sonnet agent | Low |
+| Complex (cross-file, novel) | Opus agent or Swarm | High |
+
+**Apply:** Assess complexity before spawning agents. Track routing decisions and savings.
+
+## 13. Self-Learning Through RETRIEVE-JUDGE-DISTILL
+
+**Ruflo-inspired addition.** The system improves with every execution. Past patterns inform current decisions through a structured learning cycle.
+
+1. **RETRIEVE** — Before ideating, search for similar past patterns
+2. **JUDGE** — Evaluate retrieved patterns against current context
+3. **DISTILL** — After execution, extract and store new patterns
+
+**Apply:** Every iteration consults the ReasoningBank. Every result feeds back into it. Confidence scores decay without re-validation.
+
+## 14. Anti-Drift by Design
+
+**Ruflo-inspired addition.** Multi-agent systems naturally drift from goals. Prevent this structurally, not reactively.
+
+| Prevention Layer | Mechanism |
+|-----------------|-----------|
+| Structural | Hierarchical topology, capped agents, specialized roles |
+| Checkpoints | Goal alignment check every 3 worker completions |
+| Gates | Sequential quality gates at key transitions |
+| Recovery | Pause → re-align → resume (or halt if severe) |
+
+**Apply:** Default to hierarchical topology. Cap concurrent agents at 8. Check alignment frequently. Treat drift as a system failure, not an agent failure.
+
 ## The Meta-Principle
 
-> Autonomy scales when you constrain scope, clarify success, mechanize verification, persist knowledge, and let agents optimize tactics while humans optimize strategy.
+> Autonomy scales when you constrain scope, clarify success, mechanize verification, persist knowledge, coordinate through swarms, enforce least privilege, optimize cost routing, learn from every execution, prevent drift by design, and let agents optimize tactics while humans optimize strategy.
 
 This isn't "removing humans." It's reassigning human effort from execution to direction — and ensuring every insight survives the session that discovered it.

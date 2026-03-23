@@ -131,9 +131,74 @@ run_count: {N}
 
 ---
 
+## Stream Chaining Mode
+
+Stream chaining enables agent-to-agent output piping without intermediate Obsidian storage. Use the `--stream` flag to activate this mode.
+
+### Activation
+
+```
+/autonexus:chain --stream predict → agile → ship
+```
+
+### How Stream Differs from Standard Chain
+
+| Aspect | Standard Chain | Stream Chain |
+|--------|---------------|--------------|
+| Context passing | Via Obsidian notes + git state + TSV | Direct in-memory context pipe between steps |
+| Intermediate storage | Each step writes results to Obsidian | No intermediate Obsidian writes — only final result persisted |
+| Latency | Higher (Obsidian read/write per step) | Lower (no I/O between steps) |
+| Resumability | Full — can resume from any step | Limited — must restart from beginning on failure |
+| Audit trail | Complete per-step notes in Obsidian | Summary-only at pipeline completion |
+| Observability | Real-time per-step monitoring | Pipeline-level monitoring only |
+
+### Stream Context Format
+
+Each step receives a stream context object from the previous step:
+
+```
+stream_context = {
+  output: "{raw output from previous step}",
+  summary: "{condensed summary}",
+  metrics: { metric_name: value, ... },
+  artifacts: [ "{file_path}", ... ],
+  status: "success" | "failed",
+  step_index: N,
+  command: "{previous command name}"
+}
+```
+
+The stream context is passed directly as input to the next step's execution, replacing the Obsidian-read phase that standard chains use.
+
+### When to Use Stream vs. Standard Chain
+
+**Use stream when:**
+- Speed is critical and intermediate persistence is not needed
+- Steps are tightly coupled and output directly feeds the next step
+- Running lightweight analysis pipelines (e.g., predict → scenario → security)
+- Token budget is tight — avoids Obsidian write overhead
+
+**Use standard chain when:**
+- Resumability is important (long-running pipelines)
+- You need a full audit trail of each step
+- Steps are loosely coupled and may be run independently later
+- Debugging pipeline behavior — standard chain gives per-step visibility
+
+### Stream + Standard Hybrid
+
+You can mix modes within a pipeline using per-step annotations:
+
+```
+predict --stream → agile --stream → review → ship
+```
+
+Steps marked `--stream` pipe directly; unmarked steps use standard Obsidian persistence. This lets you stream tightly-coupled steps while persisting at key checkpoints.
+
+---
+
 ## Built-in Pipeline Templates
 
-### full-sprint
+### 1. full-sprint
 
 ```
 predict --depth standard → agile --team auto → review --last → ship --type code-pr
@@ -141,7 +206,7 @@ predict --depth standard → agile --team auto → review --last → ship --type
 
 **Use when:** Starting a full development cycle from analysis through delivery.
 
-### quality-audit
+### 2. quality-audit
 
 ```
 security --depth standard → debug --scope "$SCOPE" → fix → learn --mode update
@@ -149,7 +214,7 @@ security --depth standard → debug --scope "$SCOPE" → fix → learn --mode up
 
 **Use when:** Comprehensive quality check — find vulnerabilities, find bugs, fix everything, update docs.
 
-### release-prep
+### 3. release-prep
 
 ```
 fix → security --depth quick → learn --mode update → ship --dry-run
@@ -157,7 +222,7 @@ fix → security --depth quick → learn --mode update → ship --dry-run
 
 **Use when:** Preparing for a release — clean up errors, security pass, docs update, dry-run the ship.
 
-### deep-analysis
+### 4. deep-analysis
 
 ```
 learn --mode full → predict --depth deep → scenario --depth deep → security --depth deep
@@ -165,13 +230,53 @@ learn --mode full → predict --depth deep → scenario --depth deep → securit
 
 **Use when:** Deep understanding before major work — document, get expert opinions, explore edge cases, audit security.
 
-### continuous-quality
+### 5. continuous-quality
 
 ```
 fix ?always → security ?always !skip → debug ?on-success → review --last ?always
 ```
 
 **Use when:** Ongoing quality maintenance — fix whatever's broken, audit, hunt remaining bugs, review progress.
+
+### 6. sparc-full
+
+```
+sparc:S → sparc:P → sparc:A → sparc:R → sparc:C
+```
+
+**Use when:** Full SPARC methodology pipeline — Specification → Pseudocode → Architecture → Refinement → Completion. Best for structured feature development where each phase gates the next.
+
+### 7. swarm-analyze
+
+```
+swarm --topology mesh → predict → security
+```
+
+**Use when:** Swarm exploration followed by analysis — use mesh topology for broad reconnaissance, then funnel findings through prediction and security review.
+
+### 8. ml-pipeline
+
+```
+mle-star:search → mle-star:train → mle-star:ablate → mle-star:refine
+```
+
+**Use when:** Full ML experiment lifecycle — search for approaches, train candidate models, run ablation studies, refine the best performer.
+
+### 9. governance-audit
+
+```
+govern --audit → security → compliance-auditor
+```
+
+**Use when:** Full governance review — audit current policies, run security analysis, then compliance verification. Best before releases or after major changes.
+
+### 10. full-lifecycle
+
+```
+sparc → agile → security → ship → review
+```
+
+**Use when:** Complete development lifecycle from specification through delivery and retrospective. Combines structured development (SPARC), sprint execution (agile), security validation, shipping, and post-delivery review.
 
 ---
 
@@ -191,7 +296,7 @@ IF --pipeline <name>:
 
 ELIF --template <name>:
   Load the built-in template by name from the templates defined above
-  IF name not found: ERROR: "Unknown template '{name}'. Available: full-sprint, quality-audit, release-prep, deep-analysis, continuous-quality"
+  IF name not found: ERROR: "Unknown template '{name}'. Available: full-sprint, quality-audit, release-prep, deep-analysis, continuous-quality, sparc-full, swarm-analyze, ml-pipeline, governance-audit, full-lifecycle"
 
 ELIF --resume <run-id>:
   IF OBSIDIAN_AVAILABLE:
@@ -225,7 +330,8 @@ FUNCTION parse_step(step_text):
   VALIDATE command_name is one of the known autonexus subcommands:
     [autonexus, plan, predict, debug, fix, security, ship, scenario,
      learn, setup, resume, status, review, agile, refine-backlog,
-     chain, canvas, hook]
+     chain, canvas, hook, sparc, swarm, reason, govern, auto-agent,
+     optimize, stream, mle-star]
 
   IF command_name == "chain":
     ERROR: "Recursive chain is not allowed. Flatten your pipeline."
@@ -544,10 +650,10 @@ IF OBSIDIAN_AVAILABLE:
   └──────────────────┴──────────────────────┴──────┴────────────────────┘
 
   Also list built-in templates (always available):
-  Built-in templates: full-sprint, quality-audit, release-prep, deep-analysis, continuous-quality
+  Built-in templates: full-sprint, quality-audit, release-prep, deep-analysis, continuous-quality, sparc-full, swarm-analyze, ml-pipeline, governance-audit, full-lifecycle
 ELSE:
   PRINT "Obsidian unavailable. Built-in templates available:"
-  List the 5 built-in templates with descriptions.
+  List the 10 built-in templates with descriptions.
 ```
 
 ---
@@ -579,6 +685,7 @@ When `--resume <run-id>` is invoked:
 | `--resume <run-id>` | Resume an interrupted pipeline run |
 | `--save <name>` | Save the pipeline definition to Obsidian |
 | `--list` | List all saved pipelines |
+| `--stream` | Enable stream chaining mode (agent-to-agent piping, no intermediate storage) |
 
 ## Error Handling
 
@@ -592,3 +699,4 @@ When `--resume <run-id>` is invoked:
 | Obsidian unavailable for --pipeline/--resume/--list | "This operation requires Obsidian. Run /autonexus:setup to configure." |
 | Obsidian unavailable for inline/template execution | Proceed — run log written locally, pipeline functions without Obsidian |
 | All steps skipped (conditions never met) | Print warning: "All steps were skipped — no conditions were satisfied." |
+| Stream mode step fails | Pipeline must restart from beginning — no mid-stream resumption |

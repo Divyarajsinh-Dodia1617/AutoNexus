@@ -1,7 +1,7 @@
 {
   "name": "autonexus",
-  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 18 commands: core loop, plan, predict, debug, fix, security, ship, scenario, learn, setup, resume, status, review, agile, refine-backlog, chain, canvas, hook. Full Agile sprint lifecycle with 28+ autonomous agent roles. Workflow composition, event-driven hooks, and on-demand canvas visualization. Every iteration reads from and writes to Obsidian.",
-  "version": "0.3.0",
+  "description": "Autonomous iteration engine with Obsidian knowledge backbone. 26 commands, 60+ autonomous agents. Swarm intelligence (queen hierarchy, 5 topologies, 5 consensus algorithms), SPARC 5-phase development, ReasoningBank self-learning, claims-based governance, stream chaining, three-tier routing, ML engineering. Full Agile sprint lifecycle, workflow composition, event-driven hooks, canvas visualization. Every iteration reads from and writes to Obsidian.",
+  "version": "0.4.0",
   "author": {
     "name": "Divyarajsinh Dodia",
     "email": "divyarajsinh.dodia@outlook.com",
@@ -25,7 +25,15 @@
     "agent-team",
     "workflow-composition",
     "event-driven",
-    "canvas-visualization"
+    "canvas-visualization",
+    "swarm-intelligence",
+    "self-learning",
+    "sparc",
+    "governance",
+    "stream-chaining",
+    "multi-agent",
+    "reasoning-bank",
+    "ml-engineering"
   ],
   "commands": "./commands/",
   "skills": "./skills/"
