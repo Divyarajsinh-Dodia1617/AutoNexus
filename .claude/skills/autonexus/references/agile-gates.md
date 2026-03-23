@@ -45,19 +45,23 @@ Quality gates control story progression through the sprint lifecycle. Each gate 
 **Position:** Between QA phase and Acceptance phase
 
 **Required approvals:**
-- QA: all tests passing ✓
-- QA: coverage target met ✓
+- Jr. QA Engineer: all manual test cases executed via Playwright CLI ✓
+- Sr. QA Engineer: exploratory testing completed ✓
+- Sr. QA Engineer: all bug reports validated ✓
+- QA Manager: bug assessment status is "Proceed" or "Clear" ✓
 
 **Pass criteria:**
-- All acceptance criteria have corresponding tests
-- All tests pass (0 failures)
-- Coverage ≥ story's coverage_target (default 90%)
+- All acceptance criteria have corresponding test cases (written by Jr. QA, reviewed by Sr. QA)
+- All manual test cases executed via Playwright CLI with results documented (Jr. QA)
+- Sr. QA exploratory testing completed with results documented
 - 0 P0 or P1 bugs outstanding
-- P2 bugs documented but do not block
+- P2/P3 bugs documented but do not block
+- QA Manager assessment confirms story can proceed
+- All bug reports include screenshots and reproduction steps
 
 **Failure handling:**
-- IF tests fail: Re-spawn implementation agent with bug details. Re-spawn QA after fix.
-- Max 3 QA cycles.
+- IF Playwright tests find P0/P1 bugs: Sr. QA validates → QA Manager assesses → Re-spawn implementation agent with validated bug details. Re-spawn Jr. QA for re-test after fix.
+- Max 3 QA cycles (each cycle = fix + Jr. QA re-test via Playwright CLI).
 - IF still failing: Escalate to EM.
   - EM decides: fix critical path only and defer rest, or remove story from sprint.
 

@@ -63,6 +63,7 @@ Defines all available agents, their categories, and team configurations. The orc
 |----|------|-------|------------|
 | jr-backend-eng | Jr. Backend Engineer | sonnet | agents/engineering/jr-backend-engineer.md |
 | jr-frontend-eng | Jr. Frontend Engineer | sonnet | agents/engineering/jr-frontend-engineer.md |
+| jr-qa-eng | Jr. QA Engineer | sonnet | agents/quality/jr-qa-engineer.md |
 
 ### Quality Management (Tier 7)
 
@@ -114,7 +115,7 @@ Best for: typical feature development
 | Coordination | em, scrum-master |
 | Backend | sr-backend-eng, backend-eng |
 | Frontend | sr-frontend-eng, frontend-eng |
-| Quality | qa-manager, sr-qa-eng |
+| Quality | qa-manager, sr-qa-eng, jr-qa-eng |
 | Security | sr-security-eng |
 
 Sprint capacity: ~50 story points
@@ -130,6 +131,7 @@ All Standard Team agents, plus:
 | Executive | ceo, cpo |
 | Tech Leadership | principal-eng, sr-staff-eng |
 | Additional Engineering | jr-backend-eng, jr-frontend-eng, fullstack-eng |
+| Additional Quality | jr-qa-eng (×2 — multiple Jr. QA Engineers for parallel story testing) |
 | Operations | sr-devops-eng, sr-sre |
 | Design | ux-designer, ui-designer |
 | Database | dba |
@@ -142,6 +144,7 @@ Sprint capacity: ~80 story points
 | Tier | Agent | Escalates To |
 |------|-------|-------------|
 | Jr. Engineer | jr-backend-eng, jr-frontend-eng | sr-backend-eng / sr-frontend-eng |
+| Jr. QA Engineer | jr-qa-eng | sr-qa-eng |
 | Mid Engineer | backend-eng, frontend-eng, qa-eng | sr-backend-eng / sr-frontend-eng / sr-qa-eng |
 | Sr. Engineer | sr-backend-eng, sr-frontend-eng | staff-eng |
 | Staff Engineer | staff-eng | sr-staff-eng |

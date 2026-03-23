@@ -186,9 +186,13 @@ Spawn CTO Agent (model: opus):
 IF rejected: Re-spawn Architect with CTO feedback. Max 2 design cycles.
 Update Board.md: story status → "implementing"
 
-### Step B: Implement
+### Step B: Implement + Test Case Writing (PARALLEL)
 
-Read story's design doc path from Obsidian. Determine implementation tracks from team config:
+Read story's design doc path from Obsidian. Determine implementation tracks from team config.
+
+**Two parallel tracks run simultaneously:**
+
+#### Track 1: Implementation
 
 IF story needs backend + frontend:
 
@@ -215,6 +219,28 @@ IF story is frontend-only:
 IF story is simple (≤3 points, lean team):
   Spawn Backend Engineer or Frontend Engineer (mid-level) instead.
 
+#### Track 2: Test Case Writing (Jr. QA — runs IN PARALLEL with Track 1)
+
+Spawn Jr. QA Engineer (model: sonnet):
+- Task: Read story acceptance criteria + design doc from Obsidian. Write comprehensive manual test cases to story note under "Test Cases" section. Cover ALL acceptance criteria with happy path, edge case, and error path test cases. Use the test case template (TC-{id}-001, TC-{id}-002, etc.). Do NOT wait for implementation to finish — test cases are based on REQUIREMENTS, not code.
+- Returns: "{N} test cases written — {X} happy path, {Y} edge cases, {Z} error paths."
+
+**IMPORTANT:** Jr. QA does NOT need implementation to be complete. Test cases are derived from acceptance criteria and design docs. This parallelism saves sprint time.
+
+#### After Both Tracks Complete: Test Case Review
+
+Spawn Sr. QA Engineer (model: sonnet):
+- Task: Read Jr. QA's test cases from story note "Test Cases" section. Review for completeness (all ACs covered), specificity (unambiguous steps), edge case coverage, priority accuracy, and Playwright CLI testability. Write review to story note "Test Case Review" section. Approve or request changes.
+- Returns: "{Approved | Changes Required}. {X} test cases reviewed. {Y} gaps found."
+
+IF Changes Required:
+  Re-spawn Jr. QA Engineer with Sr. QA feedback:
+  - Task: Read Sr. QA review feedback from story note "Test Case Review" section. Revise test cases accordingly. Update "Test Cases" section.
+  - Returns: "Revised {X} test cases. Added {Y} new test cases."
+
+  Re-spawn Sr. QA Engineer for re-review. Max 2 review cycles.
+  IF still not approved after 2 cycles: Escalate to QA Manager for binding decision.
+
 Update Board.md: story status → "in-review"
 
 ### Step C: Code Review
@@ -235,21 +261,70 @@ IF blocking feedback:
 
 Update Board.md: story status → "testing"
 
-### Step D: QA
+### Step D: QA (Manual Testing via Playwright CLI)
+
+All testing is manual — no automated test scripts. Jr. QA Engineers execute test cases via Playwright CLI, Sr. QA performs exploratory testing, and QA Manager oversees bug triage.
+
+#### Sub-step D1: QA Manager — Test Plan + Oversight
 
 Spawn QA Manager Agent (model: sonnet):
-- Task: Read story + acceptance criteria from Obsidian. Create test plan: happy path (all ACs), edge cases, integration tests, regression scope. Write test plan to story note "QA Log" section.
-- Returns: "Test plan: {N} test cases covering {M} ACs + {K} edge cases."
+- Task: Read story + acceptance criteria from Obsidian. Create test plan: happy path (all ACs), edge cases, error paths, integration points, regression scope. Write test plan to story note "QA Log" section. Cross-reference with Jr. QA's existing test cases — identify any gaps the test cases don't cover.
+- Returns: "Test plan: {N} test cases covering {M} ACs + {K} edge cases. Jr. QA test case gaps: {list or none}."
+
+#### Sub-step D2: Jr. QA Manual Test Execution via Playwright CLI
+
+Spawn Jr. QA Engineer (model: sonnet) — one per story, or multiple Jr. QAs for 8+ point stories:
+- Task: Read approved test cases from story note "Test Cases" section. Execute ALL test cases manually using Playwright CLI browser tools:
+  1. `browser_navigate` to the feature URL
+  2. `browser_snapshot` to understand page state
+  3. Execute each test step using `browser_click`, `browser_fill_form`, `browser_select_option`, `browser_press_key`, etc.
+  4. `browser_take_screenshot` after each critical action for evidence
+  5. Compare actual vs expected results
+  6. Mark each test case PASS / FAIL / BLOCKED
+  7. For ANY failure: file bug report with screenshot + console errors (`browser_console_messages`) + network requests (`browser_network_requests`)
+  8. Write execution results to story note "QA Execution Log" section
+  9. Write bugs to story note "Bugs" section (tagged @sr-qa-eng @qa-manager)
+- Returns: "{X}/{Y} tests pass. {Z} bugs found (P0:{a}, P1:{b}, P2:{c}, P3:{d})."
+
+#### Sub-step D3: Sr. QA Exploratory Testing via Playwright CLI
+
+After Jr. QA completes planned test execution:
 
 Spawn Sr. QA Engineer (model: sonnet):
-- Task: Read story + test plan + implementation from Obsidian. Write automated tests in test file specified by story's test_contract. Run full test suite. Check coverage target. Write results to story note QA Log.
-- Returns: "{X}/{Y} tests pass. Coverage: {Z}%. Bugs found: {N}."
+- Task: Read Jr. QA execution results from story note. Perform advanced exploratory testing via Playwright CLI for scenarios the planned test cases didn't cover — complex user flows, state transitions, boundary conditions, error recovery, concurrent access, responsive behavior. Take screenshots for all findings. Write results to story note "QA Log" under "Exploratory Testing" section. File any bugs found to "Bugs" section.
+- Returns: "{N} scenarios explored. {X} bugs found. {Y} observations noted."
+
+#### Sub-step D4: Bug Triage (after testing complete)
+
+IF Jr. QA or Sr. QA found bugs:
+
+  Spawn Sr. QA Engineer (model: sonnet):
+  - Task: Read all bug reports from story note "Bugs" section (from both Jr. QA and own exploratory testing). Validate reproduction steps, confirm severity, check for duplicates, add technical context. Write validated bugs to "Validated Bugs" section. Route to implementation team.
+  - Returns: "{X} bugs validated, {Y} severity adjusted, {Z} routed to dev."
+
+  Spawn QA Manager Agent (model: sonnet):
+  - Task: Read all bug reports and Sr. QA's validated bugs. Assess sprint impact. Escalate P0 bugs to EM. Decide if story can proceed to acceptance or must go back to implementation. Write assessment to "QA Manager Assessment" section.
+  - Returns: "Sprint impact: {Blocked | Proceed | Clear}. {X} escalations."
+
+#### Sub-step D5: Bug Fix + Re-test Cycle
+
+IF P0 or P1 bugs exist:
+  Spawn implementation agent with validated bug details from "Validated Bugs" section.
+  After fix:
+    Spawn Jr. QA Engineer (model: sonnet):
+    - Task: Re-test fixed bugs using Playwright CLI. Execute original reproduction steps. Verify fix. Run related test cases for regression. Update bug status: "Verified Fixed" or "Reopened". Write to "QA Execution Log".
+    - Returns: "{X} bugs verified fixed, {Y} bugs reopened."
+
+  IF bugs reopened: loop back to implementation. Max 3 QA cycles.
 
 **✅ QA GATE** — see `references/agile-gates.md`
 
-IF bugs found:
-  Spawn implementation agent with bug details.
-  After fix, re-spawn QA. Max 3 QA cycles.
+Pass criteria:
+- All manual test cases executed via Playwright CLI (Jr. QA)
+- Sr. QA exploratory testing completed
+- 0 P0 or P1 bugs outstanding
+- P2/P3 bugs documented but do not block
+- QA Manager assessment: "Proceed" or "Clear"
 
 Update Board.md: story status → "accepting"
 
@@ -417,13 +492,13 @@ Orchestrator:
 | Phase | Spawns |
 |-------|--------|
 | Sprint Planning | ~6 (PM, Architect, 3×estimators, EM) + 1 (CTO) |
-| Per Story (×10) | ~9 each (Architect, CTO, impl, reviewer, security, QA mgr, QA, PM) |
+| Per Story (×10) | ~13 each (Architect, CTO, impl, Jr. QA test case writing (parallel w/ impl), Sr. QA test case review, reviewer, security, QA mgr, Jr. QA Playwright execution, Sr. QA exploratory Playwright testing, Sr. QA bug triage, QA mgr bug oversight, PM) |
 | Standups (~4) | ~4 (Scrum Master) |
 | Sprint Review | ~2 (PM, CEO) |
 | Retrospective | ~8 (Scrum Master, 5-6 reflections, EM) |
-| **Total** | **~112 spawns** (clean), ~125 with rework |
+| **Total** | **~152 spawns** (clean), ~175 with rework/re-tests |
 
-Each spawn is focused: isolated context, clear task, brief return. The orchestrator's context stays clean throughout.
+Each spawn is focused: isolated context, clear task, brief return. The orchestrator's context stays clean throughout. Jr. QA test case writing runs in parallel with implementation, so it adds zero wall-clock time to that phase.
 
 ## Integration with Existing Commands
 
